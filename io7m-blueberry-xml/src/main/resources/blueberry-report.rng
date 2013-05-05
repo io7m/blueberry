@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright © 2013 <code@io7m.com> http://io7m.com
+
+  Permission to use, copy, modify, and/or distribute this software for any
+  purpose with or without fee is hereby granted, provided that the above
+  copyright notice and this permission notice appear in all copies.
+
+  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+-->
+
+<r:grammar
+  xmlns:b="http://www.io7m.com/software/blueberry/${project.version}"
+  xmlns:r="http://relaxng.org/ns/structure/1.0"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+
+  <r:start combine="choice">
+    <r:choice>
+      <r:ref name="io7m.blueberry-${project.version}.report"/>
+    </r:choice>
+  </r:start>
+
+  <r:define name="io7m.blueberry-${project.version}.standard-attributes">
+    <r:optional>
+      <r:attribute name="xml:base">
+        <r:text/>
+      </r:attribute>
+    </r:optional>
+    <r:optional>
+      <r:attribute name="xml:lang">
+        <r:text/>
+      </r:attribute>
+    </r:optional>
+  </r:define>
+
+  <r:define name="io7m.blueberry-${project.version}.test-succeeded">
+    <r:element name="b:test-succeeded">
+      <r:ref name="io7m.blueberry-${project.version}.standard-attributes"/>
+      <r:attribute name="b:name">
+        <r:text/>
+      </r:attribute>
+      <r:empty/>
+    </r:element>
+  </r:define>
+  
+  <r:define name="io7m.blueberry-${project.version}.test-failed">
+    <r:element name="b:test-failed">
+      <r:ref name="io7m.blueberry-${project.version}.standard-attributes"/>
+      <r:attribute name="b:name">
+        <r:text/>
+      </r:attribute>
+      <r:empty/>
+    </r:element>
+  </r:define>
+  
+  <r:define name="io7m.blueberry-${project.version}.test-skipped">
+    <r:element name="b:test-skipped">
+      <r:ref name="io7m.blueberry-${project.version}.standard-attributes"/>
+      <r:attribute name="b:name">
+        <r:text/>
+      </r:attribute>
+      <r:empty/>
+    </r:element>
+  </r:define>
+  
+  <r:define name="io7m.blueberry-${project.version}.test-missed">
+    <r:element name="b:test-missed">
+      <r:ref name="io7m.blueberry-${project.version}.standard-attributes"/>
+      <r:attribute name="b:name">
+        <r:text/>
+      </r:attribute>
+      <r:empty/>
+    </r:element>
+  </r:define>
+  
+  <r:define name="io7m.blueberry-${project.version}.class">
+    <r:element name="b:class">
+      <r:ref name="io7m.blueberry-${project.version}.standard-attributes"/>
+      <r:attribute name="b:name">
+        <r:text/>
+      </r:attribute>
+      <r:zeroOrMore>
+        <r:choice>
+          <r:ref name="io7m.blueberry-${project.version}.test-succeeded"/>
+          <r:ref name="io7m.blueberry-${project.version}.test-failed"/>
+          <r:ref name="io7m.blueberry-${project.version}.test-skipped"/>
+          <r:ref name="io7m.blueberry-${project.version}.test-missed"/>
+        </r:choice>
+      </r:zeroOrMore>
+    </r:element>
+  </r:define>
+  
+  <r:define name="io7m.blueberry-${project.version}.classes">
+    <r:element name="b:classes">
+      <r:ref name="io7m.blueberry-${project.version}.standard-attributes"/>
+      <r:zeroOrMore>
+        <r:ref name="io7m.blueberry-${project.version}.class"/>
+      </r:zeroOrMore>
+    </r:element>
+  </r:define>
+
+  <r:define name="io7m.blueberry-${project.version}.report">
+    <r:element name="b:report">
+      <r:ref name="io7m.blueberry-${project.version}.standard-attributes"/>
+      <r:interleave>
+        <r:ref name="io7m.blueberry-${project.version}.classes"/>
+      </r:interleave>
+    </r:element>
+  </r:define>
+
+</r:grammar>

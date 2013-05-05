@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document
+  xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>io7m-blueberry</title>
+  </properties>
+
+  <body>
+    <subsection name="blueberry">
+      The <var>blueberry</var> package implements a self-testing shell
+      for applications. Specifically, the <var>blueberry</var> test runner
+      scans the running program for JUnit tests using Java reflection,
+      executes them, and produces an XML report of the results.
+    </subsection>
+  </body>
+
+</document>
