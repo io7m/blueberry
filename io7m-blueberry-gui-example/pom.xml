@@ -6,11 +6,11 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.io7m.blueberry</groupId>
-  <artifactId>io7m-blueberry-xml</artifactId>
+  <artifactId>io7m-blueberry-gui-example</artifactId>
   <version>0.1.0</version>
   <packaging>jar</packaging>
-  <name>io7m-blueberry-xml</name>
-  <description>End-user automated junit test runner (xml)</description>
+  <name>io7m-blueberry-gui-example</name>
+  <description>End-user automated junit test runner (gui-example)</description>
   <url>http://mvn.io7m.com/blueberry/</url>
 
   <licenses>
@@ -44,7 +44,7 @@
     <site>
       <id>io7m</id>
       <name>io7m.com</name>
-      <url>http://mvn.io7m.com/blueberry-xml/</url>
+      <url>http://mvn.io7m.com/blueberry-gui-example/</url>
     </site>
   </distributionManagement>
 
@@ -59,9 +59,24 @@
 
   <dependencies>
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
       <version>2.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.blueberry</groupId>
+      <artifactId>io7m-blueberry-core</artifactId>
+      <version>0.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.blueberry</groupId>
+      <artifactId>io7m-blueberry-gui</artifactId>
+      <version>0.1.0</version>
     </dependency>
   </dependencies>
 
@@ -89,17 +104,6 @@
   </reporting>
 
   <build>
-    <!-- Filter resources -->
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-        <includes>
-          <include>**/*.rng</include>
-        </includes>
-      </resource>
-    </resources>
-
     <plugins>
       <!-- Plugin versions -->
       <plugin>
@@ -137,6 +141,79 @@
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
+      </plugin>
+
+      <!-- Produce custom manifest in jar files -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Specification-Title>${project.name}</Specification-Title>
+              <Specification-Version>${project.version}</Specification-Version>
+              <Specification-Vendor>io7m.com</Specification-Vendor>
+              <Implementation-Title>${project.name}</Implementation-Title>
+              <Implementation-Version>${project.version}</Implementation-Version>
+              <Implementation-Vendor>io7m.com</Implementation-Vendor>
+              <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+              <Built-By>io7m</Built-By>
+            </manifestEntries>
+            <manifestSection>
+              <name>com/io7m/blueberry/gui_example</name>
+              <manifestEntries>
+                <Sealed>true</Sealed>
+              </manifestEntries>
+            </manifestSection>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <!-- Create source jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.2.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+               <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Create javadoc jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <phase>package</phase>
+            <goals>
+               <goal>jar</goal>
+            </goals>
+         </execution>
+        </executions>
+      </plugin>
+
+      <!-- Enable code coverage for unit tests -->
+      <plugin>
+        <groupId>org.sonatype.maven.plugin</groupId>
+        <artifactId>emma-maven-plugin</artifactId>
+        <version>1.2</version>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>instrument</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
 

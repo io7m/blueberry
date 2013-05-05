@@ -14,15 +14,37 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
- * Auto generated, do not edit!
- */
-
 package com.io7m.blueberry;
 
-import javax.annotation.Nonnull;
-
-public final class XMLVersion
+public final class TestsStateXMLConfig
 {
-  public static final @Nonnull String XML_URI = "http://www.io7m.com/software/blueberry/0.1.0";
+  private boolean output_environment       = true;
+  private boolean output_system_properties = true;
+
+  TestsStateXMLConfig()
+  {
+
+  }
+
+  public void setOutputEnvironment(
+    final boolean output)
+  {
+    this.output_environment = output;
+  }
+
+  public void setOutputSystemProperties(
+    final boolean output)
+  {
+    this.output_system_properties = output;
+  }
+
+  public boolean wantOutputEnvironment()
+  {
+    return this.output_environment;
+  }
+
+  public boolean wantOutputSystemProperties()
+  {
+    return this.output_system_properties;
+  }
 }

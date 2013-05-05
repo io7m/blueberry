@@ -48,122 +48,147 @@ public final class TestSuiteRunner implements Runnable
 
   private final @Nonnull PrintStream original_stdout = System.out;
   private final @Nonnull PrintStream original_stderr = System.err;
+  private long                       test_number     = 0;
 
   @Override public void run()
   {
-    for (final Class<?> current_class : this.classes) {
-      final ClassName class_name =
-        new ClassName(current_class.getCanonicalName());
-      try {
-        final BlockJUnit4ClassRunner runner =
-          new BlockJUnit4ClassRunner(current_class);
+    this.test_number = 0;
+    this.states.testsStateRunStarted();
 
-        runner.run(new RunNotifier() {
-          private StringBuilderOutputStream output_stdout;
-          private StringBuilderOutputStream output_stderr;
-          private TestState.TestStateType   result_type;
-          private TestName                  test_name;
+    try {
 
-          private void streamsInit()
-          {
-            this.output_stderr = new StringBuilderOutputStream();
-            this.output_stdout = new StringBuilderOutputStream();
-            System.setOut(new PrintStream(this.output_stdout));
-            System.setErr(new PrintStream(this.output_stderr));
-          }
+      for (final Class<?> current_class : this.classes) {
+        final ClassName class_name =
+          new ClassName(current_class.getCanonicalName());
+        try {
+          final BlockJUnit4ClassRunner runner =
+            new BlockJUnit4ClassRunner(current_class);
 
-          @SuppressWarnings("synthetic-access") private void streamsReset()
-          {
-            System.setOut(TestSuiteRunner.this.original_stdout);
-            System.setErr(TestSuiteRunner.this.original_stderr);
-          }
+          runner.run(new RunNotifier() {
+            private StringBuilderOutputStream output_stdout;
+            private StringBuilderOutputStream output_stderr;
+            private TestState.TestStateType   result_type;
+            private TestName                  test_name;
+            private long                      time_start;
 
-          @Override public void fireTestStarted(
-            final Description description)
-            throws StoppedByUserException
-          {
-            this.result_type = TestStateType.STATE_SUCCEEDED;
-            this.test_name = new TestName(description.getMethodName());
-            this.streamsInit();
-          }
+            private void streamsInit()
+            {
+              this.output_stderr = new StringBuilderOutputStream();
+              this.output_stdout = new StringBuilderOutputStream();
+              System.setOut(new PrintStream(this.output_stdout));
+              System.setErr(new PrintStream(this.output_stderr));
+            }
 
-          @SuppressWarnings("synthetic-access") @Override public
-            void
-            fireTestFailure(
-              final Failure failure)
-          {
-            this.result_type = TestStateType.STATE_FAILED;
-            final Failed state =
-              new TestState.Failed(
-                this.output_stdout.getBuffer(),
-                this.output_stderr.getBuffer(),
-                failure.getException());
+            @SuppressWarnings("synthetic-access") private void streamsReset()
+            {
+              System.setOut(TestSuiteRunner.this.original_stdout);
+              System.setErr(TestSuiteRunner.this.original_stderr);
+            }
 
-            TestSuiteRunner.this.states.testsStatePut(
-              class_name,
-              this.test_name,
-              state);
-          }
+            @SuppressWarnings("synthetic-access") @Override public
+              void
+              fireTestStarted(
+                final Description description)
+                throws StoppedByUserException
+            {
+              this.result_type = TestStateType.STATE_SUCCEEDED;
+              this.test_name = new TestName(description.getMethodName());
+              this.time_start = System.nanoTime();
+              this.streamsInit();
+              TestSuiteRunner.this.states.testsStateStarted(
+                class_name,
+                this.test_name,
+                TestSuiteRunner.this.test_number);
+              ++TestSuiteRunner.this.test_number;
+            }
 
-          @SuppressWarnings("synthetic-access") @Override public
-            void
-            fireTestAssumptionFailed(
-              final Failure failure)
-          {
-            this.result_type = TestStateType.STATE_SKIPPED;
-            final Skipped state = new TestState.Skipped("Assumption failed");
-            TestSuiteRunner.this.states.testsStatePut(
-              class_name,
-              this.test_name,
-              state);
-          }
+            @SuppressWarnings("synthetic-access") @Override public
+              void
+              fireTestFailure(
+                final Failure failure)
+            {
+              final long elapsed = System.nanoTime() - this.time_start;
+              this.result_type = TestStateType.STATE_FAILED;
+              final Failed state =
+                new TestState.Failed(
+                  this.output_stdout.getBuffer(),
+                  this.output_stderr.getBuffer(),
+                  failure.getException(),
+                  elapsed);
 
-          @SuppressWarnings("synthetic-access") @Override public
-            void
-            fireTestIgnored(
-              final Description description)
-          {
-            this.result_type = TestStateType.STATE_SKIPPED;
-            final Skipped state = new TestState.Skipped("@Ignore annotation");
-            TestSuiteRunner.this.states.testsStatePut(
-              class_name,
-              this.test_name,
-              state);
-          }
+              TestSuiteRunner.this.states.testsStatePut(
+                class_name,
+                this.test_name,
+                state);
+            }
 
-          @SuppressWarnings("synthetic-access") @Override public
-            void
-            fireTestFinished(
-              final Description description)
-          {
-            final StringBuilderOutputStream stdout = this.output_stdout;
-            final StringBuilderOutputStream stderr = this.output_stderr;
-            this.streamsReset();
+            @SuppressWarnings("synthetic-access") @Override public
+              void
+              fireTestAssumptionFailed(
+                final Failure failure)
+            {
+              this.result_type = TestStateType.STATE_SKIPPED;
+              final Skipped state =
+                new TestState.Skipped("Assumption failed");
+              TestSuiteRunner.this.states.testsStatePut(
+                class_name,
+                this.test_name,
+                state);
+            }
 
-            switch (this.result_type) {
-              case STATE_FAILED:
-              case STATE_INITIALIZED:
-              case STATE_SKIPPED:
-              {
-                break;
-              }
-              case STATE_SUCCEEDED:
-              {
-                final Succeeded state =
-                  new TestState.Succeeded(stdout.getBuffer(), stderr
-                    .getBuffer());
-                TestSuiteRunner.this.states.testsStatePut(
-                  class_name,
-                  this.test_name,
-                  state);
-                break;
+            @SuppressWarnings("synthetic-access") @Override public
+              void
+              fireTestIgnored(
+                final Description description)
+            {
+              this.result_type = TestStateType.STATE_SKIPPED;
+              this.test_name = new TestName(description.getMethodName());
+              final Skipped state =
+                new TestState.Skipped("@Ignore annotation");
+              TestSuiteRunner.this.states.testsStatePut(
+                class_name,
+                this.test_name,
+                state);
+            }
+
+            @SuppressWarnings("synthetic-access") @Override public
+              void
+              fireTestFinished(
+                final Description description)
+            {
+              final StringBuilderOutputStream stdout = this.output_stdout;
+              final StringBuilderOutputStream stderr = this.output_stderr;
+              this.streamsReset();
+
+              switch (this.result_type) {
+                case STATE_FAILED:
+                case STATE_INITIALIZED:
+                case STATE_SKIPPED:
+                {
+                  break;
+                }
+                case STATE_SUCCEEDED:
+                {
+                  final long elapsed = System.nanoTime() - this.time_start;
+                  final Succeeded state =
+                    new TestState.Succeeded(stdout.getBuffer(), stderr
+                      .getBuffer(), elapsed);
+                  TestSuiteRunner.this.states.testsStatePut(
+                    class_name,
+                    this.test_name,
+                    state);
+                  break;
+                }
               }
             }
-          }
-        });
-      } catch (final InitializationError e) {
-        this.states.testsStateClassInitializationFailed(current_class, e);
+          });
+        } catch (final InitializationError e) {
+          this.states.testsStateClassInitializationFailed(current_class, e);
+        }
       }
+
+    } finally {
+      this.states.testsStateRunFinished();
     }
   }
 }

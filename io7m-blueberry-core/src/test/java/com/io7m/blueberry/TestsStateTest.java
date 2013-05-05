@@ -17,8 +17,13 @@
 package com.io7m.blueberry;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
+
+import nu.xom.Element;
+import nu.xom.Nodes;
+import nu.xom.XPathContext;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,6 +49,25 @@ public class TestsStateTest
         {
           Assert.fail();
         }
+
+        @Override public void testStateRunStarted(
+          final long count)
+        {
+          // Nothing
+        }
+
+        @Override public void testStateRunFinished()
+        {
+          // Nothing
+        }
+
+        @Override public void testStateStarted(
+          final @Nonnull ClassName class_name,
+          final @Nonnull TestName test,
+          final long n)
+        {
+          // Nothing
+        }
       });
   }
 
@@ -66,6 +90,25 @@ public class TestsStateTest
       final TestState state)
     {
       ++this.updates;
+    }
+
+    @Override public void testStateRunStarted(
+      final long count)
+    {
+      // Nothing
+    }
+
+    @Override public void testStateRunFinished()
+    {
+      // Nothing
+    }
+
+    @Override public void testStateStarted(
+      final @Nonnull ClassName class_name,
+      final @Nonnull TestName test,
+      final long n)
+    {
+      // Nothing
     }
   }
 
@@ -107,5 +150,112 @@ public class TestsStateTest
 
     Assert.assertEquals(6, counter.creates);
     Assert.assertEquals(6, counter.updates);
+  }
+
+  class IgnoreListener implements TestStateListener
+  {
+    @Override public void testStateCreated(
+      final ClassName class_name,
+      final TestName test,
+      final TestState state)
+    {
+      // Nothing
+    }
+
+    @Override public void testStateUpdated(
+      final ClassName class_name,
+      final TestName test,
+      final TestState state)
+    {
+      // Nothing
+    }
+
+    @Override public void testStateRunStarted(
+      final long count)
+    {
+      // Nothing
+    }
+
+    @Override public void testStateRunFinished()
+    {
+      // Nothing
+    }
+
+    @Override public void testStateStarted(
+      final @Nonnull ClassName class_name,
+      final @Nonnull TestName test,
+      final long n)
+    {
+      // Nothing
+    }
+  }
+
+  @Test public void testsStateXML()
+  {
+    final TestsState tstate = this.makeState();
+    final TestsStateXMLConfig config = new TestsStateXMLConfig();
+
+    final XPathContext namespaces = new XPathContext();
+    namespaces.addNamespace("s", XMLVersion.XML_URI);
+
+    {
+      config.setOutputSystemProperties(true);
+      config.setOutputEnvironment(true);
+      final Element e = tstate.toXML(config);
+      final Nodes nse = e.query("/s:report/s:system-environment", namespaces);
+      Assert.assertEquals(1, nse.size());
+      final Nodes nsp = e.query("/s:report/s:system-properties", namespaces);
+      Assert.assertEquals(1, nsp.size());
+    }
+
+    {
+      config.setOutputSystemProperties(false);
+      config.setOutputEnvironment(false);
+      final Element e = tstate.toXML(config);
+      final Nodes nse = e.query("/s:report/s:system-environment", namespaces);
+      Assert.assertEquals(0, nse.size());
+      final Nodes nsp = e.query("/s:report/s:system-properties", namespaces);
+      Assert.assertEquals(0, nsp.size());
+    }
+  }
+
+  private TestsState makeState()
+  {
+    final Set<Class<?>> classes = new HashSet<Class<?>>();
+    classes.add(AllPass.class);
+    classes.add(AllFail.class);
+    classes.add(Ignored.class);
+    final TestsState tstate = new TestsState(classes, new IgnoreListener());
+
+    final AssertionError e1 = new AssertionError("root");
+    final AssertionError e2 = new AssertionError(e1);
+    final AssertionError e3 = new AssertionError(e2);
+
+    final StringBuilder stdout = new StringBuilder("output");
+    final StringBuilder stderr = new StringBuilder("error");
+    final TestState.Failed failure =
+      new TestState.Failed(stdout, stderr, e3, 23);
+    final TestState.Succeeded success =
+      new TestState.Succeeded(stdout, stderr, 71);
+
+    final ClassName all_fail_name =
+      new ClassName(AllFail.class.getCanonicalName());
+    final ClassName all_pass_name =
+      new ClassName(AllPass.class.getCanonicalName());
+
+    tstate.testsStatePut(all_fail_name, new TestName("testFailOne"), failure);
+    tstate.testsStatePut(all_fail_name, new TestName("testFailTwo"), failure);
+    tstate.testsStatePut(
+      all_fail_name,
+      new TestName("testFailThree"),
+      failure);
+
+    tstate.testsStatePut(all_pass_name, new TestName("testPassOne"), success);
+    tstate.testsStatePut(all_pass_name, new TestName("testPassTwo"), success);
+    tstate.testsStatePut(
+      all_pass_name,
+      new TestName("testPassThree"),
+      success);
+    return tstate;
   }
 }

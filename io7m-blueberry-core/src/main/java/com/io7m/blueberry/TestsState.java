@@ -18,7 +18,9 @@ package com.io7m.blueberry;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -31,7 +33,7 @@ import org.junit.runners.model.InitializationError;
 import com.io7m.blueberry.TestState.Failed;
 import com.io7m.blueberry.TestState.Initialized;
 
-public final class TestsState implements ToXMLReport<Void>
+public final class TestsState implements ToXMLReport<TestsStateXMLConfig>
 {
   private final @Nonnull HashMap<ClassName, HashMap<TestName, TestState>> tests;
   private final @Nonnull TestStateListener                                listener;
@@ -55,7 +57,7 @@ public final class TestsState implements ToXMLReport<Void>
     }
   }
 
-  public void testsStateClassInitializationFailed(
+  void testsStateClassInitializationFailed(
     final @Nonnull Class<?> current_class,
     final @Nonnull InitializationError e)
   {
@@ -65,14 +67,14 @@ public final class TestsState implements ToXMLReport<Void>
     final ClassName class_name =
       new ClassName(current_class.getCanonicalName());
     final Failed state =
-      new TestState.Failed(new StringBuilder(), new StringBuilder(), e);
+      new TestState.Failed(new StringBuilder(), new StringBuilder(), e, 0);
 
     for (final Method m : methods) {
       this.testsStatePut(class_name, new TestName(m.getName()), state);
     }
   }
 
-  public boolean testsStateExists(
+  boolean testsStateExists(
     final @Nonnull ClassName class_name,
     final @Nonnull TestName test)
   {
@@ -82,6 +84,21 @@ public final class TestsState implements ToXMLReport<Void>
       return class_tests.containsKey(test);
     }
     return false;
+  }
+
+  void testsStatePut(
+    final @Nonnull ClassName class_name,
+    final @Nonnull TestName test,
+    final @Nonnull TestState state)
+  {
+    if (this.testsStateExists(class_name, test)) {
+      this.testsStateWriteMap(class_name, test, state);
+      this.listener.testStateUpdated(class_name, test, state);
+    } else {
+      this.testsStateWriteMap(class_name, test, state);
+      this.listener.testStateCreated(class_name, test, state);
+      this.listener.testStateUpdated(class_name, test, state);
+    }
   }
 
   private void testsStateWriteMap(
@@ -101,25 +118,68 @@ public final class TestsState implements ToXMLReport<Void>
     }
   }
 
-  public void testsStatePut(
-    final @Nonnull ClassName class_name,
-    final @Nonnull TestName test,
-    final @Nonnull TestState state)
-  {
-    if (this.testsStateExists(class_name, test)) {
-      this.testsStateWriteMap(class_name, test, state);
-      this.listener.testStateUpdated(class_name, test, state);
-    } else {
-      this.testsStateWriteMap(class_name, test, state);
-      this.listener.testStateCreated(class_name, test, state);
-      this.listener.testStateUpdated(class_name, test, state);
-    }
-  }
-
   @Override public @Nonnull Element toXML(
-    final Void x)
+    final TestsStateXMLConfig config)
   {
     final Element root = new Element("report", XMLVersion.XML_URI);
+    final Element classes = this.toXMLClasses();
+
+    if (config.wantOutputEnvironment()) {
+      final Element environment = TestsState.toXMLEnvironment();
+      root.appendChild(environment);
+    }
+    if (config.wantOutputSystemProperties()) {
+      final Element properties = TestsState.toXMLProperties();
+      root.appendChild(properties);
+    }
+
+    root.appendChild(classes);
+    return root;
+  }
+
+  private static @Nonnull Element toXMLEnvironment()
+  {
+    final Element ee = new Element("system-environment", XMLVersion.XML_URI);
+    final Map<String, String> env = System.getenv();
+
+    for (final Entry<String, String> e : env.entrySet()) {
+      final Element p =
+        new Element("system-environment-variable", XMLVersion.XML_URI);
+      final Element pk = new Element("key", XMLVersion.XML_URI);
+      pk.appendChild(e.getKey());
+      final Element pv = new Element("value", XMLVersion.XML_URI);
+      pv.appendChild(e.getValue());
+      p.appendChild(pk);
+      p.appendChild(pv);
+      ee.appendChild(p);
+    }
+
+    return ee;
+  }
+
+  private static @Nonnull Element toXMLProperties()
+  {
+    final Element pe = new Element("system-properties", XMLVersion.XML_URI);
+    final Properties props = System.getProperties();
+
+    for (final Entry<Object, Object> e : props.entrySet()) {
+      final String key = (String) e.getKey();
+      final String val = (String) e.getValue();
+      final Element p = new Element("system-property", XMLVersion.XML_URI);
+      final Element pk = new Element("key", XMLVersion.XML_URI);
+      pk.appendChild(key);
+      final Element pv = new Element("value", XMLVersion.XML_URI);
+      pv.appendChild(val);
+      p.appendChild(pk);
+      p.appendChild(pv);
+      pe.appendChild(p);
+    }
+
+    return pe;
+  }
+
+  private @Nonnull Element toXMLClasses()
+  {
     final Element classes = new Element("classes", XMLVersion.XML_URI);
 
     for (final Entry<ClassName, HashMap<TestName, TestState>> ce : this.tests
@@ -135,9 +195,37 @@ public final class TestsState implements ToXMLReport<Void>
         final Element test_element = state.toXML(test_name);
         class_element.appendChild(test_element);
       }
-    }
 
-    root.appendChild(classes);
-    return root;
+      classes.appendChild(class_element);
+    }
+    return classes;
+  }
+
+  long testsCount()
+  {
+    long count = 0;
+    for (final Entry<ClassName, HashMap<TestName, TestState>> ce : this.tests
+      .entrySet()) {
+      count += ce.getValue().size();
+    }
+    return count;
+  }
+
+  void testsStateStarted(
+    final @Nonnull ClassName class_name,
+    final @Nonnull TestName test,
+    final long n)
+  {
+    this.listener.testStateStarted(class_name, test, n);
+  }
+
+  void testsStateRunStarted()
+  {
+    this.listener.testStateRunStarted(this.testsCount());
+  }
+
+  void testsStateRunFinished()
+  {
+    this.listener.testStateRunFinished();
   }
 }

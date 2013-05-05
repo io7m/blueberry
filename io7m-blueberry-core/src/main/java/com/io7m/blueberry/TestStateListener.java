@@ -20,13 +20,47 @@ import javax.annotation.Nonnull;
 
 public interface TestStateListener
 {
+  /**
+   * The tests have started running, and <code>count</code> tests will be
+   * executed.
+   */
+
+  void testStateRunStarted(
+    final long count);
+
+  /**
+   * A test named <code>test</code> in class <code>class_name</code> has been
+   * added with state <code>state</code>.
+   */
+
   void testStateCreated(
     final @Nonnull ClassName class_name,
     final @Nonnull TestName test,
     final @Nonnull TestState state);
 
+  /**
+   * A test named <code>test</code> in class <code>class_name</code> has
+   * started running.
+   */
+
+  void testStateStarted(
+    final @Nonnull ClassName class_name,
+    final @Nonnull TestName test,
+    final long n);
+
+  /**
+   * The state of the test named <code>test</code> in class
+   * <code>class_name</code> has been updated to state <code>state</code>.
+   */
+
   void testStateUpdated(
     final @Nonnull ClassName class_name,
     final @Nonnull TestName test,
     final @Nonnull TestState state);
+
+  /**
+   * The tests have finished running.
+   */
+
+  void testStateRunFinished();
 }

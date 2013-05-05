@@ -58,6 +58,25 @@ public class TestSuiteRunnerTest
     {
       // Nothing
     }
+
+    @Override public void testStateRunStarted(
+      final long count)
+    {
+      // Nothing
+    }
+
+    @Override public void testStateRunFinished()
+    {
+      // Nothing
+    }
+
+    @Override public void testStateStarted(
+      final @Nonnull ClassName class_name,
+      final @Nonnull TestName test,
+      final long n)
+    {
+      // Nothing
+    }
   }
 
   static class PassCounter implements TestStateListener
@@ -92,6 +111,25 @@ public class TestSuiteRunnerTest
     {
       // Nothing
     }
+
+    @Override public void testStateRunStarted(
+      final long count)
+    {
+      // Nothing
+    }
+
+    @Override public void testStateRunFinished()
+    {
+      // Nothing
+    }
+
+    @Override public void testStateStarted(
+      final @Nonnull ClassName class_name,
+      final @Nonnull TestName test,
+      final long n)
+    {
+      // Nothing
+    }
   }
 
   static class SkipCounter implements TestStateListener
@@ -123,6 +161,25 @@ public class TestSuiteRunnerTest
       final @Nonnull ClassName class_name,
       final @Nonnull TestName test,
       final @Nonnull TestState state)
+    {
+      // Nothing
+    }
+
+    @Override public void testStateRunStarted(
+      final long count)
+    {
+      // Nothing
+    }
+
+    @Override public void testStateRunFinished()
+    {
+      // Nothing
+    }
+
+    @Override public void testStateStarted(
+      final @Nonnull ClassName class_name,
+      final @Nonnull TestName test,
+      final long n)
     {
       // Nothing
     }

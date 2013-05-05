@@ -21,14 +21,30 @@ import javax.annotation.Nonnull;
 import nu.xom.Attribute;
 import nu.xom.Element;
 
-abstract class TestState implements ToXMLReport<TestName>
+public abstract class TestState implements ToXMLReport<TestName>
 {
-  static enum TestStateType
+  public static enum TestStateType
   {
     STATE_INITIALIZED,
     STATE_SUCCEEDED,
     STATE_SKIPPED,
-    STATE_FAILED
+    STATE_FAILED;
+
+    public String toHumanString()
+    {
+      switch (this) {
+        case STATE_FAILED:
+          return "Failed";
+        case STATE_INITIALIZED:
+          return "Initialized";
+        case STATE_SKIPPED:
+          return "Skipped";
+        case STATE_SUCCEEDED:
+          return "Succeeded";
+      }
+
+      throw new AssertionError("Unreachable code");
+    }
   }
 
   private final @Nonnull TestStateType type;
@@ -44,7 +60,7 @@ abstract class TestState implements ToXMLReport<TestName>
     this.type = type;
   }
 
-  static final class Initialized extends TestState
+  public static final class Initialized extends TestState
   {
     @SuppressWarnings("synthetic-access") public Initialized()
     {
@@ -60,18 +76,26 @@ abstract class TestState implements ToXMLReport<TestName>
     }
   }
 
-  static final class Succeeded extends TestState
+  public static final class Succeeded extends TestState
   {
     private final @Nonnull StringBuilder output_stdout;
     private final @Nonnull StringBuilder output_stderr;
+    private final long                   time_elapsed_nano;
 
     @SuppressWarnings("synthetic-access") public Succeeded(
       final @Nonnull StringBuilder output_stdout,
-      final @Nonnull StringBuilder output_stderr)
+      final @Nonnull StringBuilder output_stderr,
+      final long time_elapsed_nano)
     {
       super(TestStateType.STATE_SUCCEEDED);
       this.output_stderr = output_stderr;
       this.output_stdout = output_stdout;
+      this.time_elapsed_nano = time_elapsed_nano;
+    }
+
+    public long getTimeElapsedNanoseconds()
+    {
+      return this.time_elapsed_nano;
     }
 
     @Override public @Nonnull Element toXML(
@@ -79,11 +103,21 @@ abstract class TestState implements ToXMLReport<TestName>
     {
       final Element e = new Element("test-succeeded", XMLVersion.XML_URI);
       e.addAttribute(new Attribute("name", name.actual));
+      final Element oso = new Element("output-stdout", XMLVersion.XML_URI);
+      oso.appendChild(this.output_stdout.toString());
+      final Element ose = new Element("output-stderr", XMLVersion.XML_URI);
+      ose.appendChild(this.output_stderr.toString());
+      final Element em = new Element("elapsed-nanos", XMLVersion.XML_URI);
+      em.appendChild(Long.toString(this.time_elapsed_nano));
+
+      e.appendChild(oso);
+      e.appendChild(ose);
+      e.appendChild(em);
       return e;
     }
   }
 
-  static final class Skipped extends TestState
+  public static final class Skipped extends TestState
   {
     private final @Nonnull String reason;
 
@@ -103,21 +137,49 @@ abstract class TestState implements ToXMLReport<TestName>
     }
   }
 
-  static final class Failed extends TestState
+  public static final class Failed extends TestState
   {
+    private static final int             STACK_TRACE_LIMIT = 256;
     private final @Nonnull StringBuilder output_stdout;
     private final @Nonnull StringBuilder output_stderr;
     private final @Nonnull Throwable     throwable;
+    private final long                   time_elapsed_nano;
 
     @SuppressWarnings("synthetic-access") public Failed(
       final @Nonnull StringBuilder output_stdout,
       final @Nonnull StringBuilder output_stderr,
-      final @Nonnull Throwable throwable)
+      final @Nonnull Throwable throwable,
+      final long time_elapsed_nano)
     {
       super(TestStateType.STATE_FAILED);
       this.output_stderr = output_stderr;
       this.output_stdout = output_stdout;
       this.throwable = throwable;
+      this.time_elapsed_nano = time_elapsed_nano;
+    }
+
+    public long getTimeElapsedNanoseconds()
+    {
+      return this.time_elapsed_nano;
+    }
+
+    private static @Nonnull Element traceElementToXML(
+      final @Nonnull StackTraceElement trace)
+    {
+      final Element t = new Element("trace", XMLVersion.XML_URI);
+      final Element tc = new Element("trace-class", XMLVersion.XML_URI);
+      tc.appendChild(trace.getClassName());
+      final Element tm = new Element("trace-method", XMLVersion.XML_URI);
+      tm.appendChild(trace.getMethodName());
+      final Element tf = new Element("trace-file", XMLVersion.XML_URI);
+      tf.appendChild(trace.getFileName());
+      final Element tl = new Element("trace-line", XMLVersion.XML_URI);
+      tl.appendChild(Integer.toString(trace.getLineNumber()));
+      t.appendChild(tc);
+      t.appendChild(tm);
+      t.appendChild(tf);
+      t.appendChild(tl);
+      return t;
     }
 
     @Override public @Nonnull Element toXML(
@@ -125,6 +187,39 @@ abstract class TestState implements ToXMLReport<TestName>
     {
       final Element e = new Element("test-failed", XMLVersion.XML_URI);
       e.addAttribute(new Attribute("name", name.actual));
+      final Element oso = new Element("output-stdout", XMLVersion.XML_URI);
+      oso.appendChild(this.output_stdout.toString());
+      final Element ose = new Element("output-stderr", XMLVersion.XML_URI);
+      ose.appendChild(this.output_stderr.toString());
+      final Element em = new Element("elapsed-nanos", XMLVersion.XML_URI);
+      em.appendChild(Long.toString(this.time_elapsed_nano));
+
+      final Element xs = new Element("exceptions", XMLVersion.XML_URI);
+      Throwable error = this.throwable;
+      for (int index = 0; index < Failed.STACK_TRACE_LIMIT; ++index) {
+        final Element x = new Element("exception", XMLVersion.XML_URI);
+        x.addAttribute(new Attribute("type", error
+          .getClass()
+          .getCanonicalName()));
+        x.addAttribute(new Attribute("level", Integer.toString(index)));
+        final StackTraceElement[] st = error.getStackTrace();
+        for (final StackTraceElement trace : st) {
+          x.appendChild(Failed.traceElementToXML(trace));
+        }
+
+        xs.appendChild(x);
+
+        if (error.getCause() != null) {
+          error = error.getCause();
+        } else {
+          break;
+        }
+      }
+
+      e.appendChild(oso);
+      e.appendChild(ose);
+      e.appendChild(em);
+      e.appendChild(xs);
       return e;
     }
   }

@@ -16,6 +16,8 @@
   <modules>
     <module>io7m-blueberry-core</module>
     <module>io7m-blueberry-documentation</module>
+    <module>io7m-blueberry-gui-example</module>
+    <module>io7m-blueberry-gui</module>
     <module>io7m-blueberry-test-data</module>
     <module>io7m-blueberry-xml</module>
   </modules>

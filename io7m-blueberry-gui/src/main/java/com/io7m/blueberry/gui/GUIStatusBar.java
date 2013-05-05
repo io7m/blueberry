@@ -14,15 +14,30 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
- * Auto generated, do not edit!
- */
+package com.io7m.blueberry.gui;
 
-package com.io7m.blueberry;
+import java.awt.FlowLayout;
 
 import javax.annotation.Nonnull;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
-public final class XMLVersion
+final class GUIStatusBar extends JPanel
 {
-  public static final @Nonnull String XML_URI = "http://www.io7m.com/software/blueberry/0.1.0";
+  private static final long     serialVersionUID = 624901598432848882L;
+  private final @Nonnull JLabel text;
+
+  GUIStatusBar()
+  {
+    this.text = new JLabel("Initialized");
+    this.text.setVisible(true);
+    this.setLayout(new FlowLayout(FlowLayout.LEADING));
+    this.add(this.text);
+  }
+
+  void setStatus(
+    final @Nonnull String new_text)
+  {
+    this.text.setText(new_text);
+  }
 }

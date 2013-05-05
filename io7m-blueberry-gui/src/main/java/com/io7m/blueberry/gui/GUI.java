@@ -14,15 +14,20 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
- * Auto generated, do not edit!
- */
-
-package com.io7m.blueberry;
+package com.io7m.blueberry.gui;
 
 import javax.annotation.Nonnull;
 
-public final class XMLVersion
+public final class GUI
 {
-  public static final @Nonnull String XML_URI = "http://www.io7m.com/software/blueberry/0.1.0";
+  private final @Nonnull GUIMainWindow  main_window;
+  private final @Nonnull GUIProjectInfo info;
+
+  public GUI(
+    final @Nonnull GUIProjectInfo info)
+  {
+    this.info = info;
+    this.main_window = new GUIMainWindow(info);
+    this.main_window.setVisible(true);
+  }
 }

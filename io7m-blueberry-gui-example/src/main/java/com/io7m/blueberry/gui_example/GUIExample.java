@@ -14,15 +14,35 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/*
- * Auto generated, do not edit!
- */
+package com.io7m.blueberry.gui_example;
 
-package com.io7m.blueberry;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashSet;
 
-import javax.annotation.Nonnull;
+import javax.swing.SwingUtilities;
 
-public final class XMLVersion
+import com.io7m.blueberry.gui.GUI;
+import com.io7m.blueberry.gui.GUIProjectInfo;
+
+public final class GUIExample
 {
-  public static final @Nonnull String XML_URI = "http://www.io7m.com/software/blueberry/0.1.0";
+  public static void main(
+    final String[] args)
+    throws URISyntaxException
+  {
+    final HashSet<String> packages = new HashSet<String>();
+    packages.add("com.io7m.blueberry");
+
+    final GUIProjectInfo info =
+      new GUIProjectInfo("blueberry-example", new URI(
+        "http://io7m.com/software/blueberry"), "0.1.0", packages);
+
+    SwingUtilities.invokeLater(new Runnable() {
+      @SuppressWarnings("unused") @Override public void run()
+      {
+        new GUI(info);
+      }
+    });
+  }
 }
