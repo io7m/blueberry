@@ -37,6 +37,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.zip.GZIPOutputStream;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -625,14 +626,15 @@ final class GUITestsPanel extends JPanel
     {
       try {
         final Document document = new Document(this.xml_data);
-        final FileOutputStream output = new FileOutputStream(this.file);
-        final Serializer serializer = new Serializer(output, "UTF-8");
+        final FileOutputStream f_out = new FileOutputStream(this.file);
+        final GZIPOutputStream z_out = new GZIPOutputStream(f_out);
+        final Serializer serializer = new Serializer(z_out, "UTF-8");
         serializer.setIndent(2);
         serializer.setMaxLength(80);
         serializer.setLineSeparator("\n");
         serializer.write(document);
-        output.flush();
-        output.close();
+        z_out.flush();
+        z_out.close();
         this.logger.write("Report saved to " + this.file);
       } catch (final FileNotFoundException e) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -687,8 +689,10 @@ final class GUITestsPanel extends JPanel
                   @Override public void run()
                   {
                     final JFileChooser fc = new JFileChooser();
+                    fc.setSelectedFile(new File("report.xml.gz"));
                     final int result =
                       fc.showSaveDialog(ButtonSaveReport.this);
+
                     switch (result) {
                       case JFileChooser.APPROVE_OPTION:
                       {
