@@ -592,6 +592,7 @@ final class GUITestsPanel extends JPanel
       final @Nonnull AtomicReference<TestCollectionRunner> runner)
     {
       this.setText("Run");
+      this.setToolTipText("Run all tests");
       this.addActionListener(new ActionListener() {
         @Override public void actionPerformed(
           final ActionEvent e)
@@ -675,6 +676,8 @@ final class GUITestsPanel extends JPanel
       final @Nonnull AtomicReference<TestCollectionRunner> runner)
     {
       this.setText("Save report...");
+      this
+        .setToolTipText("Save a gzip-compressed XML report of the test results");
       this.addActionListener(new ActionListener() {
         @Override public void actionPerformed(
           final ActionEvent e)
