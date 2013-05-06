@@ -45,7 +45,7 @@
           exhaustively test programs on their own systems. Unfortunately,
           this would require the end-users to have access to the program's
           source code and would also require them to install development
-          tools. The latter is out of the question for most end-users (if
+          tools. The former is out of the question for most end-users (if
           development tools are even available on their platform), and the
           latter is out of the question for many developers.
         </s:paragraph>
