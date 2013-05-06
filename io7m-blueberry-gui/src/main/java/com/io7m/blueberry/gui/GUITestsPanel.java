@@ -55,14 +55,14 @@ import nu.xom.Element;
 import nu.xom.Serializer;
 
 import com.io7m.blueberry.ClassName;
-import com.io7m.blueberry.TestClasses;
+import com.io7m.blueberry.TestScanning;
 import com.io7m.blueberry.TestName;
 import com.io7m.blueberry.TestReportConfig;
 import com.io7m.blueberry.TestState;
 import com.io7m.blueberry.TestState.Failed;
 import com.io7m.blueberry.TestState.Succeeded;
 import com.io7m.blueberry.TestStateListener;
-import com.io7m.blueberry.TestSuiteRunner;
+import com.io7m.blueberry.TestCollectionRunner;
 
 /**
  * The main testing panel.
@@ -328,7 +328,7 @@ final class GUITestsPanel extends JPanel
   private final @Nonnull ButtonSaveReport                 button_save;
   private final @Nonnull GUIProjectInfo                   info;
   private final @Nonnull Executor                         executor;
-  private final @Nonnull AtomicReference<TestSuiteRunner> runner;
+  private final @Nonnull AtomicReference<TestCollectionRunner> runner;
   private final @Nonnull RunnerListener                   listener;
   private final @Nonnull TestReportConfig                 xml_config;
   private final @Nonnull GUILogger                        logger;
@@ -439,14 +439,14 @@ final class GUITestsPanel extends JPanel
     private long                                            load_time = 0;
     private final @Nonnull GUIProjectInfo                   info;
     private final @Nonnull GUILogger                        logger;
-    private final @Nonnull AtomicReference<TestSuiteRunner> runner;
+    private final @Nonnull AtomicReference<TestCollectionRunner> runner;
     private final @Nonnull RunnerListener                   listener;
     private final @Nonnull JButton                          button;
 
     public RunnerInitializationTask(
       final @Nonnull GUIProjectInfo info,
       final @Nonnull GUILogger logger,
-      final @Nonnull AtomicReference<TestSuiteRunner> runner,
+      final @Nonnull AtomicReference<TestCollectionRunner> runner,
       final @Nonnull RunnerListener listener,
       final @Nonnull JButton button)
     {
@@ -462,7 +462,7 @@ final class GUITestsPanel extends JPanel
       final long time_before_load = System.nanoTime();
       final Set<Class<?>> classes = new HashSet<Class<?>>();
       for (final String prefix : this.info.getPackagePrefixes()) {
-        final Set<Class<?>> cs = TestClasses.getPackageClasses(prefix);
+        final Set<Class<?>> cs = TestScanning.getPackageClasses(prefix);
         classes.addAll(cs);
       }
       this.load_time = System.nanoTime() - time_before_load;
@@ -509,8 +509,8 @@ final class GUITestsPanel extends JPanel
        * Initialize runner.
        */
 
-      final TestSuiteRunner new_runner =
-        new TestSuiteRunner(this.listener, classes);
+      final TestCollectionRunner new_runner =
+        new TestCollectionRunner(this.listener, classes);
 
       this.runner.set(new_runner);
     }
@@ -522,14 +522,14 @@ final class GUITestsPanel extends JPanel
 
     ButtonRun(
       final @Nonnull Executor executor,
-      final @Nonnull AtomicReference<TestSuiteRunner> runner)
+      final @Nonnull AtomicReference<TestCollectionRunner> runner)
     {
       this.setText("Run");
       this.addActionListener(new ActionListener() {
         @Override public void actionPerformed(
           final ActionEvent e)
         {
-          final TestSuiteRunner r = runner.get();
+          final TestCollectionRunner r = runner.get();
           if (r != null) {
             executor.execute(r);
             ButtonRun.this.setEnabled(false);
@@ -604,14 +604,14 @@ final class GUITestsPanel extends JPanel
       final @Nonnull GUILogger logger,
       final @Nonnull TestReportConfig xml_config,
       final @Nonnull Executor executor,
-      final @Nonnull AtomicReference<TestSuiteRunner> runner)
+      final @Nonnull AtomicReference<TestCollectionRunner> runner)
     {
       this.setText("Save report...");
       this.addActionListener(new ActionListener() {
         @Override public void actionPerformed(
           final ActionEvent e)
         {
-          final TestSuiteRunner r = runner.get();
+          final TestCollectionRunner r = runner.get();
           if (r != null) {
             executor.execute(new Runnable() {
               @Override public void run()
@@ -652,7 +652,7 @@ final class GUITestsPanel extends JPanel
     this.info = info;
     this.logger = logger;
     this.executor = Executors.newCachedThreadPool();
-    this.runner = new AtomicReference<TestSuiteRunner>();
+    this.runner = new AtomicReference<TestCollectionRunner>();
     this.xml_config = xml_config;
 
     /**

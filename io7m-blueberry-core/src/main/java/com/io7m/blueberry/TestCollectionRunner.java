@@ -18,6 +18,7 @@ package com.io7m.blueberry;
 
 import java.io.PrintStream;
 import java.util.Set;
+import java.util.concurrent.Executor;
 
 import javax.annotation.Nonnull;
 
@@ -36,20 +37,20 @@ import com.io7m.blueberry.TestState.Succeeded;
 import com.io7m.blueberry.TestState.TestStateType;
 
 /**
- * A test runner that runs all tests in the given class, and publishes test
+ * A test runner that runs all tests in the given classes, and publishes test
  * state changes on the given listener.
  * 
- * @see {@link TestStateListener}
+ * @see TestStateListener
  */
 
-public final class TestSuiteRunner implements
+public final class TestCollectionRunner implements
   Runnable,
   ToXMLReport<TestReportConfig>
 {
   private final @Nonnull Set<Class<?>> classes;
   private final @Nonnull TestsState    states;
 
-  public TestSuiteRunner(
+  public TestCollectionRunner(
     final @Nonnull TestStateListener listener,
     final @Nonnull Set<Class<?>> classes)
   {
@@ -60,6 +61,19 @@ public final class TestSuiteRunner implements
   private final @Nonnull PrintStream original_stdout = System.out;
   private final @Nonnull PrintStream original_stderr = System.err;
   private long                       test_number     = 0;
+
+  /**
+   * <p>
+   * Execute all tests in the set of classes given to the constructor.
+   * </p>
+   * <p>
+   * Note that this class implements {@link Runnable}, and the intention is
+   * that this method will be called from an {@link Executor} in order to run
+   * all unit tests on a separate thread.
+   * </p>
+   * 
+   * @see #TestSuiteRunner(TestStateListener, Set)
+   */
 
   @Override public void run()
   {
@@ -92,8 +106,8 @@ public final class TestSuiteRunner implements
 
             @SuppressWarnings("synthetic-access") private void streamsReset()
             {
-              System.setOut(TestSuiteRunner.this.original_stdout);
-              System.setErr(TestSuiteRunner.this.original_stderr);
+              System.setOut(TestCollectionRunner.this.original_stdout);
+              System.setErr(TestCollectionRunner.this.original_stderr);
             }
 
             @SuppressWarnings("synthetic-access") @Override public
@@ -106,11 +120,11 @@ public final class TestSuiteRunner implements
               this.test_name = new TestName(description.getMethodName());
               this.time_start = System.nanoTime();
               this.streamsInit();
-              TestSuiteRunner.this.states.testsStateStarted(
+              TestCollectionRunner.this.states.testsStateStarted(
                 class_name,
                 this.test_name,
-                TestSuiteRunner.this.test_number);
-              ++TestSuiteRunner.this.test_number;
+                TestCollectionRunner.this.test_number);
+              ++TestCollectionRunner.this.test_number;
             }
 
             @SuppressWarnings("synthetic-access") @Override public
@@ -127,7 +141,7 @@ public final class TestSuiteRunner implements
                   failure.getException(),
                   elapsed);
 
-              TestSuiteRunner.this.states.testsStatePut(
+              TestCollectionRunner.this.states.testsStatePut(
                 class_name,
                 this.test_name,
                 state);
@@ -141,7 +155,7 @@ public final class TestSuiteRunner implements
               this.result_type = TestStateType.STATE_SKIPPED;
               final Skipped state =
                 new TestState.Skipped("Assumption failed");
-              TestSuiteRunner.this.states.testsStatePut(
+              TestCollectionRunner.this.states.testsStatePut(
                 class_name,
                 this.test_name,
                 state);
@@ -156,7 +170,7 @@ public final class TestSuiteRunner implements
               this.test_name = new TestName(description.getMethodName());
               final Skipped state =
                 new TestState.Skipped("@Ignore annotation");
-              TestSuiteRunner.this.states.testsStatePut(
+              TestCollectionRunner.this.states.testsStatePut(
                 class_name,
                 this.test_name,
                 state);
@@ -184,7 +198,7 @@ public final class TestSuiteRunner implements
                   final Succeeded state =
                     new TestState.Succeeded(stdout.getBuffer(), stderr
                       .getBuffer(), elapsed);
-                  TestSuiteRunner.this.states.testsStatePut(
+                  TestCollectionRunner.this.states.testsStatePut(
                     class_name,
                     this.test_name,
                     state);

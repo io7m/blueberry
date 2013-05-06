@@ -16,7 +16,40 @@
 
 package com.io7m.blueberry;
 
-public abstract class UnrunnableClassAbstract
+import org.junit.Test;
+
+/**
+ * A class containing methods of varying visibility.
+ * 
+ * This is test suite data and not intended for use by developers.
+ */
+
+public final class TestDataMethodCases
 {
-  // Nothing
+  @SuppressWarnings({ "unused", "static-method" }) private
+    void
+    privateNotStatic()
+  {
+    throw new AssertionError();
+  }
+
+  @SuppressWarnings("unused") private static void privateAndStatic()
+  {
+    throw new AssertionError();
+  }
+
+  @SuppressWarnings("static-method") public void publicNotStatic()
+  {
+    throw new AssertionError();
+  }
+
+  public static void publicAndStatic()
+  {
+    throw new AssertionError();
+  }
+
+  @SuppressWarnings("static-method") @Test public void publicActual()
+  {
+    System.out.println("publicActual");
+  }
 }

@@ -116,7 +116,7 @@ public class TestsStateTest
   {
     final Counter counter = new Counter();
     final HashSet<Class<?>> classes = new HashSet<Class<?>>();
-    classes.add(AllPass.class);
+    classes.add(TestDataAllPass.class);
     @SuppressWarnings("unused") final TestsState tstate =
       new TestsState(classes, counter);
 
@@ -128,7 +128,7 @@ public class TestsStateTest
   {
     final Counter counter = new Counter();
     final HashSet<Class<?>> classes = new HashSet<Class<?>>();
-    classes.add(AllPass.class);
+    classes.add(TestDataAllPass.class);
     final TestsState tstate = new TestsState(classes, counter);
 
     final ClassName class_name = new ClassName("com.io7m.Xyz");
@@ -222,9 +222,9 @@ public class TestsStateTest
   private TestsState makeState()
   {
     final Set<Class<?>> classes = new HashSet<Class<?>>();
-    classes.add(AllPass.class);
-    classes.add(AllFail.class);
-    classes.add(Ignored.class);
+    classes.add(TestDataAllPass.class);
+    classes.add(TestDataAllFail.class);
+    classes.add(TestDataIgnored.class);
     final TestsState tstate = new TestsState(classes, new IgnoreListener());
 
     final AssertionError e1 = new AssertionError("root");
@@ -239,9 +239,9 @@ public class TestsStateTest
       new TestState.Succeeded(stdout, stderr, 71);
 
     final ClassName all_fail_name =
-      new ClassName(AllFail.class.getCanonicalName());
+      new ClassName(TestDataAllFail.class.getCanonicalName());
     final ClassName all_pass_name =
-      new ClassName(AllPass.class.getCanonicalName());
+      new ClassName(TestDataAllPass.class.getCanonicalName());
 
     tstate.testsStatePut(all_fail_name, new TestName("testFailOne"), failure);
     tstate.testsStatePut(all_fail_name, new TestName("testFailTwo"), failure);

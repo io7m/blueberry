@@ -53,7 +53,7 @@ public final class TestsState implements ToXMLReport<TestReportConfig>
 
     for (final Class<?> c : classes) {
       final ClassName class_name = new ClassName(c.getCanonicalName());
-      final Set<Method> methods = TestClasses.getRunnableTestMethods(c);
+      final Set<Method> methods = TestScanning.getRunnableTestMethods(c);
       for (final Method m : methods) {
         final TestName test_name = new TestName(m.getName());
         this.testsStatePut(class_name, test_name, this.initial_state);
@@ -66,7 +66,7 @@ public final class TestsState implements ToXMLReport<TestReportConfig>
     final @Nonnull InitializationError e)
   {
     final Set<Method> methods =
-      TestClasses.getRunnableTestMethods(current_class);
+      TestScanning.getRunnableTestMethods(current_class);
 
     final ClassName class_name =
       new ClassName(current_class.getCanonicalName());

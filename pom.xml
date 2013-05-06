@@ -15,7 +15,6 @@
 
   <modules>
     <module>io7m-blueberry-core</module>
-    <module>io7m-blueberry-documentation</module>
     <module>io7m-blueberry-gui-example</module>
     <module>io7m-blueberry-gui</module>
     <module>io7m-blueberry-test-data</module>
@@ -90,6 +89,89 @@
   </reporting>
 
   <build>
+    <plugins>
+      <!-- Produce aggregate javadoc for all modules -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.9</version>
+        <executions>
+          <execution>
+            <id>aggregate</id>
+            <goals>
+              <goal>aggregate</goal>
+            </goals>
+            <phase>process-sources</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Produce application and documentation archives -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.4</version>
+        <executions>
+          <execution>
+            <id>make-doc-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>assembly-doc.xml</descriptor>
+              </descriptors>
+              <appendAssemblyId>true</appendAssemblyId>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Validate XML documentation -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>xml-maven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>validate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <validationSets>
+            <validationSet>
+              <dir>src/main/xml</dir>
+            </validationSet>
+          </validationSets>
+        </configuration>
+      </plugin>
+
+      <!-- Transform XML documentation with Saxon -->
+      <plugin>
+        <groupId>com.io7m.saxon-plugin</groupId>
+        <artifactId>io7m-saxon-plugin</artifactId>
+        <version>1.1.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <transformation>
+            <stylesheetFile>src/main/xsl/structural-1_0_0-standalone-x20.xsl</stylesheetFile>
+            <documentFile>src/main/xml/documentation.xml</documentFile>
+            <outputDirectory>${project.build.directory}/xhtml</outputDirectory>
+            <outputDirectoryParameterName>io7m.structural-1_0_0.output_directory</outputDirectoryParameterName>
+            <outputFile>out.txt</outputFile>
+          </transformation>
+        </configuration>
+      </plugin>
+    </plugins>
+
     <!-- Allow deployment over ssh -->
     <extensions>
       <extension>

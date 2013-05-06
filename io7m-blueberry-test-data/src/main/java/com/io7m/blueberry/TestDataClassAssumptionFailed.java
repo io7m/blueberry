@@ -16,12 +16,26 @@
 
 package com.io7m.blueberry;
 
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 
-public final class RunnableClass
+/**
+ * A set of tests that will be skipped due to a failed assumption.
+ * 
+ * This is test suite data and not intended for use by developers.
+ */
+
+public final class TestDataClassAssumptionFailed
 {
-  @Test public void testOne()
+  @SuppressWarnings("static-method") @Before public void checkAssumption()
   {
-    // Nothing
+    Assume.assumeTrue(false);
+  }
+
+  @SuppressWarnings("static-method") @Test public void testPassOne()
+  {
+    System.out.println(TestDataClassAssumptionFailed.class.getCanonicalName()
+      + ": testPassOne");
   }
 }

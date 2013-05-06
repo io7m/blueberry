@@ -18,20 +18,26 @@ package com.io7m.blueberry;
 
 import org.junit.Test;
 
-public final class AllPass
+/**
+ * A class full of tests that all pass.
+ * 
+ * This is test suite data and not intended for use by developers.
+ */
+
+public final class TestDataAllPass
 {
   @SuppressWarnings("static-method") @Test public void testPassOne()
   {
-    System.out.println(AllPass.class.getCanonicalName() + ": testPassOne");
+    System.out.println(TestDataAllPass.class.getCanonicalName() + ": testPassOne");
   }
 
   @SuppressWarnings("static-method") @Test public void testPassTwo()
   {
-    System.out.println(AllPass.class.getCanonicalName() + ": testPassTwo");
+    System.out.println(TestDataAllPass.class.getCanonicalName() + ": testPassTwo");
   }
 
   @SuppressWarnings("static-method") @Test public void testPassThree()
   {
-    System.out.println(AllPass.class.getCanonicalName() + ": testPassThree");
+    System.out.println(TestDataAllPass.class.getCanonicalName() + ": testPassThree");
   }
 }

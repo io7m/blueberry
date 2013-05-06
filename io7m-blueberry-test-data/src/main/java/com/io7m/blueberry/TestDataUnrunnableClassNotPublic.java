@@ -16,7 +16,13 @@
 
 package com.io7m.blueberry;
 
-class UnrunnableClassNotPublic
+/**
+ * A class that is not runnable due to not being public.
+ * 
+ * This is test suite data and not intended for use by developers.
+ */
+
+class TestDataUnrunnableClassNotPublic
 {
   // Nothing
 }

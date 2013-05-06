@@ -1,6 +1,5 @@
 /*
- * Copyright © 201TimeUnit.MILLISECONDS.convert(3, TimeUnit.SECONDS)
- * <code@io7m.com> http://io7m.com
+ * Copyright © 2013 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -21,7 +20,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-public final class SlowAndBlocking
+/**
+ * A class containing tests that are slow to complete.
+ * 
+ * This is test suite data and not intended for use by developers.
+ */
+
+public final class TestDataSlowAndBlocking
 {
   @SuppressWarnings("static-method") @Test public void testSlowOne()
     throws InterruptedException

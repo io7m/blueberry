@@ -16,28 +16,13 @@
 
 package com.io7m.blueberry;
 
-import org.junit.Test;
+/**
+ * A class that is not runnable due to being abstract.
+ * 
+ * This is test suite data and not intended for use by developers.
+ */
 
-public final class Explosive
+public abstract class TestDataUnrunnableClassAbstract
 {
-  static {
-    if (Math.random() >= 0.0) {
-      throw new AssertionError("BANG!");
-    }
-  }
-
-  @Test public void testOne()
-  {
-    // Nothing
-  }
-
-  @Test public void testTwo()
-  {
-    // Nothing
-  }
-
-  @Test public void testThree()
-  {
-    // Nothing
-  }
+  // Nothing
 }

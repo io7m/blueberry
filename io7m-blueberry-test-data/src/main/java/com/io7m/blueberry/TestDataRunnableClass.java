@@ -16,26 +16,18 @@
 
 package com.io7m.blueberry;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-public final class AllFail
+/**
+ * A class containing a runnable test.
+ * 
+ * This is test suite data and not intended for use by developers.
+ */
+
+public final class TestDataRunnableClass
 {
-  @SuppressWarnings("static-method") @Test public void testFailOne()
+  @Test public void testOne()
   {
-    System.out.println(AllFail.class.getCanonicalName() + ": testFailOne");
-    Assert.fail();
-  }
-
-  @SuppressWarnings("static-method") @Test public void testFailTwo()
-  {
-    System.out.println(AllFail.class.getCanonicalName() + ": testFailTwo");
-    Assert.fail();
-  }
-
-  @SuppressWarnings("static-method") @Test public void testFailThree()
-  {
-    System.out.println(AllFail.class.getCanonicalName() + ": testFailThree");
-    Assert.fail();
+    // Nothing
   }
 }

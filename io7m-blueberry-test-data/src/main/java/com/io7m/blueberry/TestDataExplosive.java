@@ -18,32 +18,32 @@ package com.io7m.blueberry;
 
 import org.junit.Test;
 
-public final class MethodCases
+/**
+ * A class that immediately raises an exception upon instantiation.
+ * 
+ * This is test suite data and not intended for use by developers.
+ */
+
+public final class TestDataExplosive
 {
-  @SuppressWarnings({ "unused", "static-method" }) private
-    void
-    privateNotStatic()
-  {
-    throw new AssertionError();
+  static {
+    if (Math.random() >= 0.0) {
+      throw new AssertionError("BANG!");
+    }
   }
 
-  @SuppressWarnings("unused") private static void privateAndStatic()
+  @Test public void testOne()
   {
-    throw new AssertionError();
+    // Nothing
   }
 
-  @SuppressWarnings("static-method") public void publicNotStatic()
+  @Test public void testTwo()
   {
-    throw new AssertionError();
+    // Nothing
   }
 
-  public static void publicAndStatic()
+  @Test public void testThree()
   {
-    throw new AssertionError();
-  }
-
-  @SuppressWarnings("static-method") @Test public void publicActual()
-  {
-    System.out.println("publicActual");
+    // Nothing
   }
 }

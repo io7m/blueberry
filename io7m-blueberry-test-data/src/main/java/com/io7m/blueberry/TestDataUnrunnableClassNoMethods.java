@@ -16,7 +16,13 @@
 
 package com.io7m.blueberry;
 
-public final class UnrunnableClassNoMethods
+/**
+ * A class that is not runnable due to not having any runnable methods.
+ * 
+ * This is test suite data and not intended for use by developers.
+ */
+
+public final class TestDataUnrunnableClassNoMethods
 {
   // Nothing
 }

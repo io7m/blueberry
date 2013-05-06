@@ -31,10 +31,10 @@ import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
 /**
- * Functions to deal with classes.
+ * Functions for scanning for tests, and inspecting classes and methods.
  */
 
-public final class TestClasses
+public final class TestScanning
 {
   /**
    * Return the set of all classes on the classpath that are in packages
@@ -60,7 +60,7 @@ public final class TestClasses
       new HashSet<Class<? extends Object>>();
 
     for (final Class<? extends Object> c : ts) {
-      if (TestClasses.isRunnableTestClass(c)) {
+      if (TestScanning.isRunnableTestClass(c)) {
         selected.add(c);
       }
     }
@@ -79,7 +79,7 @@ public final class TestClasses
     final Set<Method> methods = new HashSet<Method>();
     final Method[] all = c.getMethods();
     for (final Method m : all) {
-      if (TestClasses.isTestMethod(m)) {
+      if (TestScanning.isTestMethod(m)) {
         methods.add(m);
       }
     }
@@ -106,7 +106,7 @@ public final class TestClasses
 
     final Method[] methods = c.getMethods();
     for (final Method m : methods) {
-      if (TestClasses.isTestMethod(m)) {
+      if (TestScanning.isTestMethod(m)) {
         return true;
       }
     }

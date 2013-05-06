@@ -19,6 +19,12 @@ package com.io7m.blueberry;
 import org.junit.Assume;
 import org.junit.Test;
 
+/**
+ * A class containing a method with a failed assumption.
+ * 
+ * This is test suite data and not intended for use by developers.
+ */
+
 public final class TestAssumptionFailed
 {
   @SuppressWarnings("static-method") @Test public void testPassOne()

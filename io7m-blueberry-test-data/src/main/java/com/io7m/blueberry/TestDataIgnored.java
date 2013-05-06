@@ -20,7 +20,13 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public final class Ignored
+/**
+ * A class containing tests annotated with \@Ignore.
+ * 
+ * This is test suite data and not intended for use by developers.
+ */
+
+public final class TestDataIgnored
 {
   @Ignore @SuppressWarnings("static-method") @Test public
     void

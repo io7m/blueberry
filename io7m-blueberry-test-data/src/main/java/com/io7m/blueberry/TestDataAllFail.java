@@ -16,20 +16,32 @@
 
 package com.io7m.blueberry;
 
-import org.junit.Assume;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
 
-public final class ClassAssumptionFailed
+/**
+ * A class full of tests that all fail.
+ * 
+ * This is test suite data and not intended for use by developers.
+ */
+
+public final class TestDataAllFail
 {
-  @SuppressWarnings("static-method") @Before public void checkAssumption()
+  @SuppressWarnings("static-method") @Test public void testFailOne()
   {
-    Assume.assumeTrue(false);
+    System.out.println(TestDataAllFail.class.getCanonicalName() + ": testFailOne");
+    Assert.fail();
   }
 
-  @SuppressWarnings("static-method") @Test public void testPassOne()
+  @SuppressWarnings("static-method") @Test public void testFailTwo()
   {
-    System.out.println(ClassAssumptionFailed.class.getCanonicalName()
-      + ": testPassOne");
+    System.out.println(TestDataAllFail.class.getCanonicalName() + ": testFailTwo");
+    Assert.fail();
+  }
+
+  @SuppressWarnings("static-method") @Test public void testFailThree()
+  {
+    System.out.println(TestDataAllFail.class.getCanonicalName() + ": testFailThree");
+    Assert.fail();
   }
 }

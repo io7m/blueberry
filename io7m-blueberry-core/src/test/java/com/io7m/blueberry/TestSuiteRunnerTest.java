@@ -188,10 +188,11 @@ public class TestSuiteRunnerTest
   @SuppressWarnings("static-method") @Test public void testRunFailure()
   {
     final HashSet<Class<?>> classes = new HashSet<Class<?>>();
-    classes.add(new AllFail().getClass());
+    classes.add(new TestDataAllFail().getClass());
 
     final FailureCounter counter = new FailureCounter();
-    final TestSuiteRunner runner = new TestSuiteRunner(counter, classes);
+    final TestCollectionRunner runner =
+      new TestCollectionRunner(counter, classes);
     runner.run();
     Assert.assertEquals(3, counter.failures);
   }
@@ -199,10 +200,11 @@ public class TestSuiteRunnerTest
   @SuppressWarnings("static-method") @Test public void testRunSuccess()
   {
     final HashSet<Class<?>> classes = new HashSet<Class<?>>();
-    classes.add(new AllPass().getClass());
+    classes.add(new TestDataAllPass().getClass());
 
     final PassCounter counter = new PassCounter();
-    final TestSuiteRunner runner = new TestSuiteRunner(counter, classes);
+    final TestCollectionRunner runner =
+      new TestCollectionRunner(counter, classes);
     runner.run();
     Assert.assertEquals(3, counter.succeeds);
   }
@@ -212,10 +214,11 @@ public class TestSuiteRunnerTest
     testRunClassAssumptionFailed()
   {
     final HashSet<Class<?>> classes = new HashSet<Class<?>>();
-    classes.add(new ClassAssumptionFailed().getClass());
+    classes.add(new TestDataClassAssumptionFailed().getClass());
 
     final SkipCounter counter = new SkipCounter();
-    final TestSuiteRunner runner = new TestSuiteRunner(counter, classes);
+    final TestCollectionRunner runner =
+      new TestCollectionRunner(counter, classes);
     runner.run();
     Assert.assertEquals(1, counter.skips);
   }
@@ -228,7 +231,8 @@ public class TestSuiteRunnerTest
     classes.add(new TestAssumptionFailed().getClass());
 
     final SkipCounter counter = new SkipCounter();
-    final TestSuiteRunner runner = new TestSuiteRunner(counter, classes);
+    final TestCollectionRunner runner =
+      new TestCollectionRunner(counter, classes);
     runner.run();
     Assert.assertEquals(1, counter.skips);
   }
@@ -236,10 +240,11 @@ public class TestSuiteRunnerTest
   @SuppressWarnings("static-method") @Test public void testRunTestIgnored()
   {
     final HashSet<Class<?>> classes = new HashSet<Class<?>>();
-    classes.add(new Ignored().getClass());
+    classes.add(new TestDataIgnored().getClass());
 
     final SkipCounter counter = new SkipCounter();
-    final TestSuiteRunner runner = new TestSuiteRunner(counter, classes);
+    final TestCollectionRunner runner =
+      new TestCollectionRunner(counter, classes);
     runner.run();
     Assert.assertEquals(1, counter.skips);
   }
@@ -247,10 +252,11 @@ public class TestSuiteRunnerTest
   @SuppressWarnings("static-method") @Test public void testRunTestCrash()
   {
     final HashSet<Class<?>> classes = new HashSet<Class<?>>();
-    classes.add(Explosive.class);
+    classes.add(TestDataExplosive.class);
 
     final FailureCounter counter = new FailureCounter();
-    final TestSuiteRunner runner = new TestSuiteRunner(counter, classes);
+    final TestCollectionRunner runner =
+      new TestCollectionRunner(counter, classes);
     runner.run();
     Assert.assertEquals(3, counter.failures);
   }
@@ -305,10 +311,10 @@ public class TestSuiteRunnerTest
   @SuppressWarnings("static-method") @Test public void testRunLifetime()
   {
     final HashSet<Class<?>> classes = new HashSet<Class<?>>();
-    classes.add(AllPass.class);
+    classes.add(TestDataAllPass.class);
 
     final Lifecycle lc = new Lifecycle();
-    final TestSuiteRunner runner = new TestSuiteRunner(lc, classes);
+    final TestCollectionRunner runner = new TestCollectionRunner(lc, classes);
     runner.run();
 
     Assert.assertEquals(3, lc.run_expected);
