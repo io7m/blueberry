@@ -16,15 +16,24 @@
 
 package com.io7m.blueberry;
 
-public final class TestsStateXMLConfig
+/**
+ * XML report configuration.
+ */
+
+public final class TestReportConfig
 {
   private boolean output_environment       = true;
   private boolean output_system_properties = true;
 
-  TestsStateXMLConfig()
+  public TestReportConfig()
   {
 
   }
+
+  /**
+   * Set whether or not the contents of the JVM's environment should appear in
+   * the resulting report.
+   */
 
   public void setOutputEnvironment(
     final boolean output)
@@ -32,16 +41,35 @@ public final class TestsStateXMLConfig
     this.output_environment = output;
   }
 
+  /**
+   * Set whether or not the contents of the JVM's system properties should
+   * appear in the resulting report.
+   */
+
   public void setOutputSystemProperties(
     final boolean output)
   {
     this.output_system_properties = output;
   }
 
+  /**
+   * Return <code>true</code> if the report will contain the contents of the
+   * JVM's environment.
+   * 
+   * @see #setOutputEnvironment(boolean)
+   */
+
   public boolean wantOutputEnvironment()
   {
     return this.output_environment;
   }
+
+  /**
+   * Return <code>true</code> if the report will contain the contents of the
+   * JVM's system properties.
+   * 
+   * @see #setOutputSystemProperties(boolean)
+   */
 
   public boolean wantOutputSystemProperties()
   {

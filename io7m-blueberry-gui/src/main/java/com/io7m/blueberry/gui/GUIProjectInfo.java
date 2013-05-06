@@ -17,27 +17,75 @@
 package com.io7m.blueberry.gui;
 
 import java.net.URI;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+
+/**
+ * Information about the project.
+ */
 
 public final class GUIProjectInfo
 {
-  private final @Nonnull String      project_name;
-  private final @Nonnull URI         project_uri;
-  private final @Nonnull String      project_version;
-  private final @Nonnull Set<String> project_package_prefixes;
+  private final @Nonnull String            project_name;
+  private @CheckForNull URI                project_uri;
+  private final @Nonnull GUIProjectVersion project_version;
+  private final @Nonnull Set<String>       project_package_prefixes;
+  private @CheckForNull URI                project_icon;
 
   public GUIProjectInfo(
     final @Nonnull String project_name,
-    final @Nonnull URI project_uri,
-    final @Nonnull String project_version,
-    final @Nonnull Set<String> project_package_prefixes)
+    final @Nonnull GUIProjectVersion project_version)
   {
     this.project_name = project_name;
-    this.project_uri = project_uri;
+    this.project_uri = null;
     this.project_version = project_version;
-    this.project_package_prefixes = project_package_prefixes;
+    this.project_package_prefixes = new HashSet<String>();
+  }
+
+  public void addPackagePrefix(
+    final @Nonnull String prefix)
+  {
+    this.project_package_prefixes.add(prefix);
+  }
+
+  public @Nonnull Set<String> getPackagePrefixes()
+  {
+    return this.project_package_prefixes;
+  }
+
+  public URI getProjectIcon()
+  {
+    return this.project_icon;
+  }
+
+  public @Nonnull String getProjectName()
+  {
+    return this.project_name;
+  }
+
+  public @CheckForNull URI getProjectURI()
+  {
+    return this.project_uri;
+  }
+
+  public @Nonnull GUIProjectVersion getProjectVersion()
+  {
+    return this.project_version;
+  }
+
+  public void setProjectIcon(
+    final @Nonnull URI icon)
+  {
+    this.project_icon = icon;
+  }
+
+  public void setProjectURI(
+    final @Nonnull URI uri)
+  {
+    this.project_uri = uri;
   }
 
   @Override public String toString()
@@ -46,13 +94,10 @@ public final class GUIProjectInfo
     builder.append(this.project_name);
     builder.append(" ");
     builder.append(this.project_version);
-    builder.append(" - ");
-    builder.append(this.project_uri.toString());
+    if (this.project_uri != null) {
+      builder.append(" - ");
+      builder.append(this.project_uri.toString());
+    }
     return builder.toString();
-  }
-
-  public Set<String> getPackagePrefixes()
-  {
-    return this.project_package_prefixes;
   }
 }

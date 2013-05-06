@@ -21,6 +21,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import nu.xom.Element;
+
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
@@ -33,7 +35,16 @@ import com.io7m.blueberry.TestState.Skipped;
 import com.io7m.blueberry.TestState.Succeeded;
 import com.io7m.blueberry.TestState.TestStateType;
 
-public final class TestSuiteRunner implements Runnable
+/**
+ * A test runner that runs all tests in the given class, and publishes test
+ * state changes on the given listener.
+ * 
+ * @see {@link TestStateListener}
+ */
+
+public final class TestSuiteRunner implements
+  Runnable,
+  ToXMLReport<TestReportConfig>
 {
   private final @Nonnull Set<Class<?>> classes;
   private final @Nonnull TestsState    states;
@@ -190,5 +201,11 @@ public final class TestSuiteRunner implements Runnable
     } finally {
       this.states.testsStateRunFinished();
     }
+  }
+
+  @Override public @Nonnull Element toXML(
+    final @Nonnull TestReportConfig config)
+  {
+    return this.states.toXML(config);
   }
 }

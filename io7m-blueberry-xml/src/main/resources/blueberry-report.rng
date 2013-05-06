@@ -146,7 +146,9 @@
       <r:attribute name="name">
         <r:text/>
       </r:attribute>
-      <r:empty/>
+      <r:element name="b:reason">
+        <r:text/>
+      </r:element>
     </r:element>
   </r:define>
   

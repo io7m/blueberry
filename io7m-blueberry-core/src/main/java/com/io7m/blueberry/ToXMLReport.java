@@ -20,8 +20,19 @@ import javax.annotation.Nonnull;
 
 import nu.xom.Element;
 
+/**
+ * The interface shared by types that appear in the XML reports.
+ * 
+ * @param <T>
+ *          Input required for serialization.
+ */
+
 public interface ToXMLReport<T>
 {
+  /**
+   * Serialize the current type to an XML element.
+   */
+
   public @Nonnull Element toXML(
     T t);
 }

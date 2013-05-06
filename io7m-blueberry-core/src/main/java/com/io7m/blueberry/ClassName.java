@@ -18,6 +18,10 @@ package com.io7m.blueberry;
 
 import javax.annotation.Nonnull;
 
+/**
+ * A fully-qualified class name.
+ */
+
 public final class ClassName
 {
   public final @Nonnull String actual;
@@ -25,6 +29,7 @@ public final class ClassName
   ClassName(
     final @Nonnull String actual)
   {
+    assert actual != null;
     this.actual = actual;
   }
 

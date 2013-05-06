@@ -18,12 +18,18 @@ package com.io7m.blueberry.gui_example;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashSet;
 
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import com.io7m.blueberry.TestReportConfig;
 import com.io7m.blueberry.gui.GUI;
 import com.io7m.blueberry.gui.GUIProjectInfo;
+import com.io7m.blueberry.gui.GUIProjectVersion;
+
+/**
+ * A trivial GUI example.
+ */
 
 public final class GUIExample
 {
@@ -31,17 +37,20 @@ public final class GUIExample
     final String[] args)
     throws URISyntaxException
   {
-    final HashSet<String> packages = new HashSet<String>();
-    packages.add("com.io7m.blueberry");
-
+    final TestReportConfig xml_config = new TestReportConfig();
+    final GUIProjectVersion version = new GUIProjectVersion(0, 1, 0, "rc1");
     final GUIProjectInfo info =
-      new GUIProjectInfo("blueberry-example", new URI(
-        "http://io7m.com/software/blueberry"), "0.1.0", packages);
+      new GUIProjectInfo("blueberry-example", version);
+    info.addPackagePrefix("com.io7m.blueberry");
+    info.setProjectURI(new URI("http://io7m.com/software/blueberry"));
+    info.setProjectIcon(GUIExample.class.getResource(
+      "/com/io7m/blueberry/gui_example/blueberry48.png").toURI());
 
     SwingUtilities.invokeLater(new Runnable() {
-      @SuppressWarnings("unused") @Override public void run()
+      @Override public void run()
       {
-        new GUI(info);
+        final GUI g = new GUI(info, xml_config);
+        g.getMainWindow().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       }
     });
   }

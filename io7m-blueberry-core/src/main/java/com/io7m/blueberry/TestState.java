@@ -21,6 +21,10 @@ import javax.annotation.Nonnull;
 import nu.xom.Attribute;
 import nu.xom.Element;
 
+/**
+ * The state of a given test.
+ */
+
 public abstract class TestState implements ToXMLReport<TestName>
 {
   public static enum TestStateType
@@ -133,6 +137,9 @@ public abstract class TestState implements ToXMLReport<TestName>
     {
       final Element e = new Element("test-skipped", XMLVersion.XML_URI);
       e.addAttribute(new Attribute("name", name.actual));
+      final Element er = new Element("reason", XMLVersion.XML_URI);
+      er.appendChild(this.reason);
+      e.appendChild(er);
       return e;
     }
   }

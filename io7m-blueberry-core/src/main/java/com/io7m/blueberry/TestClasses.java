@@ -30,6 +30,10 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
+/**
+ * Functions to deal with classes.
+ */
+
 public final class TestClasses
 {
   /**

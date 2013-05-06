@@ -254,4 +254,67 @@ public class TestSuiteRunnerTest
     runner.run();
     Assert.assertEquals(3, counter.failures);
   }
+
+  static class Lifecycle implements TestStateListener
+  {
+    boolean run_started  = false;
+    boolean run_finished = false;
+    long    run_expected = 0;
+    long    creations    = 0;
+    long    starts       = 0;
+    long    updates      = 0;
+
+    @Override public void testStateRunStarted(
+      final long count)
+    {
+      this.run_started = true;
+      this.run_expected = count;
+    }
+
+    @Override public void testStateCreated(
+      final ClassName class_name,
+      final TestName test,
+      final TestState state)
+    {
+      ++this.creations;
+    }
+
+    @Override public void testStateStarted(
+      final ClassName class_name,
+      final TestName test,
+      final long n)
+    {
+      Assert.assertEquals(n, this.starts);
+      ++this.starts;
+    }
+
+    @Override public void testStateUpdated(
+      final ClassName class_name,
+      final TestName test,
+      final TestState state)
+    {
+      ++this.updates;
+    }
+
+    @Override public void testStateRunFinished()
+    {
+      this.run_finished = true;
+    }
+  }
+
+  @SuppressWarnings("static-method") @Test public void testRunLifetime()
+  {
+    final HashSet<Class<?>> classes = new HashSet<Class<?>>();
+    classes.add(AllPass.class);
+
+    final Lifecycle lc = new Lifecycle();
+    final TestSuiteRunner runner = new TestSuiteRunner(lc, classes);
+    runner.run();
+
+    Assert.assertEquals(3, lc.run_expected);
+    Assert.assertTrue(lc.run_started);
+    Assert.assertEquals(3, lc.creations);
+    Assert.assertEquals(lc.creations * 2, lc.updates);
+    Assert.assertTrue(lc.run_finished);
+  }
 }

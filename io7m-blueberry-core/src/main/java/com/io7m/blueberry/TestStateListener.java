@@ -18,6 +18,10 @@ package com.io7m.blueberry;
 
 import javax.annotation.Nonnull;
 
+/**
+ * An interface for listening for test state changes.
+ */
+
 public interface TestStateListener
 {
   /**

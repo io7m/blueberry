@@ -16,32 +16,44 @@
 
 package com.io7m.blueberry.gui;
 
-import java.awt.FlowLayout;
+import java.awt.Font;
 
 import javax.annotation.Nonnull;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+import net.java.dev.designgridlayout.DesignGridLayout;
 
 /**
- * The window's status bar.
+ * The project log panel.
  */
 
-final class GUIStatusBar extends JPanel
+final class GUILogPanel extends JPanel
 {
-  private static final long     serialVersionUID = 624901598432848882L;
-  private final @Nonnull JLabel text;
+  private static final long          serialVersionUID;
 
-  GUIStatusBar()
-  {
-    this.text = new JLabel("Initialized");
-    this.text.setVisible(true);
-    this.setLayout(new FlowLayout(FlowLayout.LEADING));
-    this.add(this.text);
+  static {
+    serialVersionUID = -893271289371892391L;
   }
 
-  void setStatus(
-    final @Nonnull String new_text)
+  private final @Nonnull JTextArea   text_area;
+  private final @Nonnull JScrollPane scrollpane;
+
+  GUILogPanel()
   {
-    this.text.setText(new_text);
+    this.text_area = new JTextArea();
+    this.text_area.setEditable(false);
+    this.text_area.setFont(Font.decode(Font.MONOSPACED + " 9"));
+    this.scrollpane = new JScrollPane(this.text_area);
+
+    final DesignGridLayout tp_layout = new DesignGridLayout(this);
+    tp_layout.row().grid().add(this.scrollpane);
+  }
+
+  void write(
+    final @Nonnull String message)
+  {
+    this.text_area.append(message + "\n");
   }
 }

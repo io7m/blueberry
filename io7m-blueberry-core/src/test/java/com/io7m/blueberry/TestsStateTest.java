@@ -193,7 +193,7 @@ public class TestsStateTest
   @Test public void testsStateXML()
   {
     final TestsState tstate = this.makeState();
-    final TestsStateXMLConfig config = new TestsStateXMLConfig();
+    final TestReportConfig config = new TestReportConfig();
 
     final XPathContext namespaces = new XPathContext();
     namespaces.addNamespace("s", XMLVersion.XML_URI);

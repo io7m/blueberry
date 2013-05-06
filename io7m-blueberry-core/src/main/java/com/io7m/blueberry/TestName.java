@@ -18,6 +18,10 @@ package com.io7m.blueberry;
 
 import javax.annotation.Nonnull;
 
+/**
+ * A test (method) name.
+ */
+
 public final class TestName
 {
   public final @Nonnull String actual;
@@ -25,6 +29,7 @@ public final class TestName
   TestName(
     final @Nonnull String actual)
   {
+    assert actual != null;
     this.actual = actual;
   }
 

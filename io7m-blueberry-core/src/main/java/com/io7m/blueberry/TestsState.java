@@ -33,7 +33,11 @@ import org.junit.runners.model.InitializationError;
 import com.io7m.blueberry.TestState.Failed;
 import com.io7m.blueberry.TestState.Initialized;
 
-public final class TestsState implements ToXMLReport<TestsStateXMLConfig>
+/**
+ * Opaque structure representing the current testing state.
+ */
+
+public final class TestsState implements ToXMLReport<TestReportConfig>
 {
   private final @Nonnull HashMap<ClassName, HashMap<TestName, TestState>> tests;
   private final @Nonnull TestStateListener                                listener;
@@ -119,7 +123,7 @@ public final class TestsState implements ToXMLReport<TestsStateXMLConfig>
   }
 
   @Override public @Nonnull Element toXML(
-    final TestsStateXMLConfig config)
+    final TestReportConfig config)
   {
     final Element root = new Element("report", XMLVersion.XML_URI);
     final Element classes = this.toXMLClasses();

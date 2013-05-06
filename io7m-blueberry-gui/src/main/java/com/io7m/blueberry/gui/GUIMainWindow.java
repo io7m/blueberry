@@ -23,19 +23,29 @@ import javax.annotation.Nonnull;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
-public final class GUIMainWindow extends JFrame
+import com.io7m.blueberry.TestReportConfig;
+
+/**
+ * The main test window.
+ */
+
+final class GUIMainWindow extends JFrame
 {
   private final @Nonnull JTabbedPane   tabs;
   private final @Nonnull GUITestsPanel tests_tab;
   private final @Nonnull GUIStatusBar  status_bar;
+  private final @Nonnull GUIInfoPanel  info_tab;
+  private final @Nonnull GUILogPanel   log_tab;
+  private final @Nonnull GUILogger     logger;
   private static final long            serialVersionUID;
 
   static {
     serialVersionUID = 2766673586988551555L;
   }
 
-  public GUIMainWindow(
-    final @Nonnull GUIProjectInfo info)
+  GUIMainWindow(
+    final @Nonnull GUIProjectInfo info,
+    final @Nonnull TestReportConfig xml_config)
   {
     final StringBuilder title_buffer = new StringBuilder();
     title_buffer.append(info.toString());
@@ -45,10 +55,15 @@ public final class GUIMainWindow extends JFrame
     this.setMinimumSize(new Dimension(640, 480));
 
     this.status_bar = new GUIStatusBar();
-    this.tests_tab = new GUITestsPanel(info, this.status_bar);
+    this.log_tab = new GUILogPanel();
+    this.logger = new GUILogger(this.status_bar, this.log_tab);
+    this.tests_tab = new GUITestsPanel(info, xml_config, this.logger);
+    this.info_tab = new GUIInfoPanel(info);
 
     this.tabs = new JTabbedPane();
     this.tabs.add("Tests", this.tests_tab);
+    this.tabs.add("Log", this.log_tab);
+    this.tabs.add("Info", this.info_tab);
 
     this.add(this.tabs, BorderLayout.CENTER);
     this.add(this.status_bar, BorderLayout.PAGE_END);

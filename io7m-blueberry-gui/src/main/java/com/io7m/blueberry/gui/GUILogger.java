@@ -16,32 +16,25 @@
 
 package com.io7m.blueberry.gui;
 
-import java.awt.FlowLayout;
-
 import javax.annotation.Nonnull;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
-/**
- * The window's status bar.
- */
-
-final class GUIStatusBar extends JPanel
+final class GUILogger
 {
-  private static final long     serialVersionUID = 624901598432848882L;
-  private final @Nonnull JLabel text;
+  private final @Nonnull GUIStatusBar status;
+  private final @Nonnull GUILogPanel  log;
 
-  GUIStatusBar()
+  GUILogger(
+    final @Nonnull GUIStatusBar status,
+    final @Nonnull GUILogPanel log)
   {
-    this.text = new JLabel("Initialized");
-    this.text.setVisible(true);
-    this.setLayout(new FlowLayout(FlowLayout.LEADING));
-    this.add(this.text);
+    this.status = status;
+    this.log = log;
   }
 
-  void setStatus(
-    final @Nonnull String new_text)
+  void write(
+    final @Nonnull String message)
   {
-    this.text.setText(new_text);
+    this.status.setStatus(message);
+    this.log.write(message);
   }
 }

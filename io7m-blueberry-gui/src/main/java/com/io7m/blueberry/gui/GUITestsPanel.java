@@ -16,9 +16,16 @@
 
 package com.io7m.blueberry.gui;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -30,25 +37,36 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import net.java.dev.designgridlayout.DesignGridLayout;
+import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Serializer;
 
 import com.io7m.blueberry.ClassName;
 import com.io7m.blueberry.TestClasses;
 import com.io7m.blueberry.TestName;
+import com.io7m.blueberry.TestReportConfig;
 import com.io7m.blueberry.TestState;
 import com.io7m.blueberry.TestState.Failed;
 import com.io7m.blueberry.TestState.Succeeded;
 import com.io7m.blueberry.TestStateListener;
 import com.io7m.blueberry.TestSuiteRunner;
+
+/**
+ * The main testing panel.
+ */
 
 final class GUITestsPanel extends JPanel
 {
@@ -56,12 +74,12 @@ final class GUITestsPanel extends JPanel
 
   static class ClassTestPair implements Comparable<ClassTestPair>
   {
-    private final ClassName class_name;
-    private final TestName  test_name;
+    public final @Nonnull ClassName class_name;
+    public final @Nonnull TestName  test_name;
 
     ClassTestPair(
-      final ClassName class_name,
-      final TestName test_name)
+      final @Nonnull ClassName class_name,
+      final @Nonnull TestName test_name)
     {
       assert class_name != null;
       assert test_name != null;
@@ -124,7 +142,7 @@ final class GUITestsPanel extends JPanel
         new String[] { "Class", "Test", "State", "Elapsed (ms)" };
     }
 
-    public TestsTableModel()
+    TestsTableModel()
     {
       this.data_map = new TreeMap<ClassTestPair, TestState>();
       this.formatter = NumberFormat.getInstance();
@@ -148,27 +166,33 @@ final class GUITestsPanel extends JPanel
       return TestsTableModel.column_names.length;
     }
 
-    @Override public Object getValueAt(
-      final int rowIndex,
-      final int columnIndex)
+    @Nonnull ClassTestPair getClassTestPairAt(
+      final int row)
     {
-      if (rowIndex < this.data_map.size()) {
+      if (row < this.data_map.size()) {
         final Iterator<ClassTestPair> iter =
           this.data_map.keySet().iterator();
         int index = 0;
         while (iter.hasNext()) {
           final ClassTestPair x = iter.next();
-          if (index == rowIndex) {
-            return this.getValue(columnIndex, x);
+          if (index == row) {
+            return x;
           }
           ++index;
         }
       }
 
-      throw new AssertionError("Unreachable");
+      throw new AssertionError("Unreachable code");
     }
 
-    private Object getValue(
+    @Override public Object getValueAt(
+      final int row,
+      final int column)
+    {
+      return this.getValue(column, this.getClassTestPairAt(row));
+    }
+
+    private String getValue(
       final int columnIndex,
       final ClassTestPair x)
     {
@@ -180,37 +204,48 @@ final class GUITestsPanel extends JPanel
         case 2:
           return this.data_map.get(x).getType().toHumanString();
         case 3:
+          return this.getElapsed(this.data_map.get(x));
+      }
+
+      throw new AssertionError("Unreachable code");
+    }
+
+    private @Nonnull String getElapsed(
+      final @Nonnull TestState state)
+    {
+      switch (state.getType()) {
+        case STATE_FAILED:
         {
-          final TestState z = this.data_map.get(x);
-          switch (z.getType()) {
-            case STATE_FAILED:
-            {
-              final Failed f = (TestState.Failed) z;
-              final double k = (f.getTimeElapsedNanoseconds()) * 0.000001;
-              return this.formatter.format(k);
-            }
-            case STATE_INITIALIZED:
-            {
-              return this.formatter.format(0.0);
-            }
-            case STATE_SKIPPED:
-            {
-              return this.formatter.format(0.0);
-            }
-            case STATE_SUCCEEDED:
-            {
-              final Succeeded s = (TestState.Succeeded) z;
-              final double k = (s.getTimeElapsedNanoseconds()) * 0.000001;
-              return this.formatter.format(k);
-            }
-          }
+          final Failed f = (TestState.Failed) state;
+          final double k = (f.getTimeElapsedNanoseconds()) * 0.000001;
+          return this.formatter.format(k);
+        }
+        case STATE_INITIALIZED:
+        {
+          return this.formatter.format(0.0);
+        }
+        case STATE_SKIPPED:
+        {
+          return this.formatter.format(0.0);
+        }
+        case STATE_SUCCEEDED:
+        {
+          final Succeeded s = (TestState.Succeeded) state;
+          final double k = (s.getTimeElapsedNanoseconds()) * 0.000001;
+          return this.formatter.format(k);
         }
       }
 
-      throw new AssertionError("Unreachable code!");
+      throw new AssertionError("Unreachable code");
     }
 
-    public void testStateSet(
+    @CheckForNull TestState lookup(
+      final @Nonnull ClassTestPair cp)
+    {
+      return this.data_map.get(cp);
+    }
+
+    void testStateSet(
       final ClassName class_name,
       final TestName test,
       final TestState state)
@@ -223,42 +258,99 @@ final class GUITestsPanel extends JPanel
 
   static class TestsTable extends JTable
   {
-    private static final long serialVersionUID = 432410053774535219L;
+    private static final long              serialVersionUID =
+                                                              432410053774535219L;
+    private final @Nonnull TestsTableModel data;
 
     TestsTable(
       final @Nonnull TestsTableModel data)
     {
       super(data);
+      this.data = data;
       this.getColumnModel().getColumn(0).setPreferredWidth(300);
       this.getColumnModel().getColumn(1).setPreferredWidth(100);
       this.getColumnModel().getColumn(2).setPreferredWidth(32);
       this.getColumnModel().getColumn(3).setPreferredWidth(32);
+    }
+
+    private static final @Nonnull Color color_failed;
+    private static final @Nonnull Color color_skipped;
+    private static final @Nonnull Color color_initialized;
+    private static final @Nonnull Color color_succeeded;
+
+    static {
+      color_failed = new Color(1.0f, 0.8f, 0.8f);
+      color_skipped = new Color(1.0f, 1.0f, 0.8f);
+      color_initialized = new Color(1.0f, 1.0f, 1.0f);
+      color_succeeded = new Color(0.8f, 1.0f, 0.8f);
+    }
+
+    @Override public @Nonnull Component prepareRenderer(
+      final @Nonnull TableCellRenderer renderer,
+      final int row,
+      final int column)
+    {
+      final Component c = super.prepareRenderer(renderer, row, column);
+      final ClassTestPair cp = this.data.getClassTestPairAt(row);
+      final TestState state = this.data.lookup(cp);
+
+      switch (state.getType()) {
+        case STATE_FAILED:
+        {
+          c.setBackground(TestsTable.color_failed);
+          break;
+        }
+        case STATE_INITIALIZED:
+        {
+          c.setBackground(TestsTable.color_initialized);
+          break;
+        }
+        case STATE_SKIPPED:
+        {
+          c.setBackground(TestsTable.color_skipped);
+          break;
+        }
+        case STATE_SUCCEEDED:
+        {
+          c.setBackground(TestsTable.color_succeeded);
+          break;
+        }
+      }
+
+      return c;
     }
   }
 
   private final @Nonnull TestsTableModel                  table_data;
   private final @Nonnull TestsTable                       table;
   private final @Nonnull JScrollPane                      table_pane;
-  private final @Nonnull JButton                          button_run;
-  private final @Nonnull JButton                          button_save;
-  private final @Nonnull GUIStatusBar                     status;
+  private final @Nonnull ButtonRun                        button_run;
+  private final @Nonnull ButtonSaveReport                 button_save;
   private final @Nonnull GUIProjectInfo                   info;
   private final @Nonnull Executor                         executor;
   private final @Nonnull AtomicReference<TestSuiteRunner> runner;
   private final @Nonnull RunnerListener                   listener;
+  private final @Nonnull TestReportConfig                 xml_config;
+  private final @Nonnull GUILogger                        logger;
 
   private static class RunnerListener implements TestStateListener
   {
-    private final @Nonnull TestsTableModel table_data;
-    private final @Nonnull GUIStatusBar    status;
-    private long                           test_total = 0;
+    private final @Nonnull TestsTableModel  table_data;
+    private final @Nonnull GUILogger        logger;
+    private long                            test_total = 0;
+    private final @Nonnull ButtonRun        button_run;
+    private final @Nonnull ButtonSaveReport button_save;
 
     public RunnerListener(
       final @Nonnull TestsTableModel table_data,
-      final @Nonnull GUIStatusBar status)
+      final @Nonnull GUILogger logger,
+      final @Nonnull ButtonRun button_run,
+      final @Nonnull ButtonSaveReport button_save)
     {
       this.table_data = table_data;
-      this.status = status;
+      this.logger = logger;
+      this.button_run = button_run;
+      this.button_save = button_save;
     }
 
     @Override public void testStateRunStarted(
@@ -268,7 +360,7 @@ final class GUITestsPanel extends JPanel
         @SuppressWarnings("synthetic-access") @Override public void run()
         {
           RunnerListener.this.test_total = count;
-          RunnerListener.this.status.setStatus("Running tests...");
+          RunnerListener.this.logger.write("Running tests...");
         }
       });
     }
@@ -306,7 +398,8 @@ final class GUITestsPanel extends JPanel
       SwingUtilities.invokeLater(new Runnable() {
         @SuppressWarnings("synthetic-access") @Override public void run()
         {
-          RunnerListener.this.status.setStatus("Test run completed");
+          RunnerListener.this.logger.write("Test run completed");
+          RunnerListener.this.button_save.setEnabled(true);
         }
       });
     }
@@ -330,7 +423,7 @@ final class GUITestsPanel extends JPanel
           buffer.append(RunnerListener.this.test_total);
           buffer.append(")");
 
-          RunnerListener.this.status.setStatus(buffer.toString());
+          RunnerListener.this.logger.write(buffer.toString());
         }
       });
     }
@@ -345,20 +438,20 @@ final class GUITestsPanel extends JPanel
   {
     private long                                            load_time = 0;
     private final @Nonnull GUIProjectInfo                   info;
-    private final @Nonnull GUIStatusBar                     status;
+    private final @Nonnull GUILogger                        logger;
     private final @Nonnull AtomicReference<TestSuiteRunner> runner;
     private final @Nonnull RunnerListener                   listener;
     private final @Nonnull JButton                          button;
 
     public RunnerInitializationTask(
       final @Nonnull GUIProjectInfo info,
-      final @Nonnull GUIStatusBar status,
+      final @Nonnull GUILogger logger,
       final @Nonnull AtomicReference<TestSuiteRunner> runner,
       final @Nonnull RunnerListener listener,
       final @Nonnull JButton button)
     {
       this.info = info;
-      this.status = status;
+      this.logger = logger;
       this.runner = runner;
       this.listener = listener;
       this.button = button;
@@ -385,8 +478,8 @@ final class GUITestsPanel extends JPanel
       SwingUtilities.invokeLater(new Runnable() {
         @Override public void run()
         {
-          RunnerInitializationTask.this.status
-            .setStatus("Loading test classes...");
+          RunnerInitializationTask.this.logger
+            .write("Loading test classes...");
         }
       });
 
@@ -407,7 +500,7 @@ final class GUITestsPanel extends JPanel
           buffer.append(ms);
           buffer.append(" milliseconds");
 
-          RunnerInitializationTask.this.status.setStatus(buffer.toString());
+          RunnerInitializationTask.this.logger.write(buffer.toString());
           RunnerInitializationTask.this.button.setEnabled(true);
         }
       });
@@ -423,14 +516,144 @@ final class GUITestsPanel extends JPanel
     }
   }
 
+  static class ButtonRun extends JButton
+  {
+    private static final long serialVersionUID = -4090482958181194934L;
+
+    ButtonRun(
+      final @Nonnull Executor executor,
+      final @Nonnull AtomicReference<TestSuiteRunner> runner)
+    {
+      this.setText("Run");
+      this.addActionListener(new ActionListener() {
+        @Override public void actionPerformed(
+          final ActionEvent e)
+        {
+          final TestSuiteRunner r = runner.get();
+          if (r != null) {
+            executor.execute(r);
+            ButtonRun.this.setEnabled(false);
+          }
+        }
+      });
+    }
+  }
+
+  static class XMLSaveTask implements Runnable
+  {
+    private final @Nonnull GUILogger logger;
+    private final @Nonnull File      file;
+    private final @Nonnull Element   xml_data;
+
+    XMLSaveTask(
+      final @Nonnull GUILogger logger,
+      final @Nonnull File file,
+      final @Nonnull Element xml_data)
+    {
+      this.logger = logger;
+      this.file = file;
+      this.xml_data = xml_data;
+    }
+
+    @Override public void run()
+    {
+      try {
+        final Document document = new Document(this.xml_data);
+        final FileOutputStream output = new FileOutputStream(this.file);
+        final Serializer serializer = new Serializer(output, "UTF-8");
+        serializer.setIndent(2);
+        serializer.setMaxLength(80);
+        serializer.setLineSeparator("\n");
+        serializer.write(document);
+        output.flush();
+        output.close();
+        this.logger.write("Report saved to " + this.file);
+      } catch (final FileNotFoundException e) {
+        SwingUtilities.invokeLater(new Runnable() {
+          @SuppressWarnings("synthetic-access") @Override public void run()
+          {
+            XMLSaveTask.this.logger.write("Error saving report: "
+              + e.getMessage());
+          }
+        });
+      } catch (final UnsupportedEncodingException e) {
+        SwingUtilities.invokeLater(new Runnable() {
+          @SuppressWarnings("synthetic-access") @Override public void run()
+          {
+            XMLSaveTask.this.logger.write("Error saving report: "
+              + e.getMessage());
+          }
+        });
+      } catch (final IOException e) {
+        SwingUtilities.invokeLater(new Runnable() {
+          @SuppressWarnings("synthetic-access") @Override public void run()
+          {
+            XMLSaveTask.this.logger.write("Error saving report: "
+              + e.getMessage());
+          }
+        });
+      }
+    }
+  }
+
+  static class ButtonSaveReport extends JButton
+  {
+    private static final long serialVersionUID = 2332514499389125540L;
+
+    ButtonSaveReport(
+      final @Nonnull GUILogger logger,
+      final @Nonnull TestReportConfig xml_config,
+      final @Nonnull Executor executor,
+      final @Nonnull AtomicReference<TestSuiteRunner> runner)
+    {
+      this.setText("Save report...");
+      this.addActionListener(new ActionListener() {
+        @Override public void actionPerformed(
+          final ActionEvent e)
+        {
+          final TestSuiteRunner r = runner.get();
+          if (r != null) {
+            executor.execute(new Runnable() {
+              @Override public void run()
+              {
+                final Element report_xml = r.toXML(xml_config);
+                SwingUtilities.invokeLater(new Runnable() {
+                  @Override public void run()
+                  {
+                    final JFileChooser fc = new JFileChooser();
+                    final int result =
+                      fc.showSaveDialog(ButtonSaveReport.this);
+                    switch (result) {
+                      case JFileChooser.APPROVE_OPTION:
+                      {
+                        executor.execute(new XMLSaveTask(logger, fc
+                          .getSelectedFile(), report_xml));
+                        break;
+                      }
+                      case JFileChooser.CANCEL_OPTION:
+                      case JFileChooser.ERROR_OPTION:
+                        break;
+                    }
+                  }
+                });
+              }
+            });
+          }
+        }
+      });
+    }
+  }
+
   GUITestsPanel(
     final @Nonnull GUIProjectInfo info,
-    final @Nonnull GUIStatusBar status)
+    final @Nonnull TestReportConfig xml_config,
+    final @Nonnull GUILogger logger)
   {
     this.info = info;
-    this.status = status;
+    this.logger = logger;
     this.executor = Executors.newCachedThreadPool();
     this.runner = new AtomicReference<TestSuiteRunner>();
+    this.xml_config = xml_config;
 
     /**
      * Initialize table.
@@ -449,32 +672,30 @@ final class GUITestsPanel extends JPanel
      * Initialize controls.
      */
 
-    this.button_run = new JButton("Run");
+    this.button_run = new ButtonRun(this.executor, this.runner);
     this.button_run.setEnabled(false);
-    this.button_run.addActionListener(new ActionListener() {
-      @SuppressWarnings("synthetic-access") @Override public
-        void
-        actionPerformed(
-          final ActionEvent e)
-      {
-        final TestSuiteRunner r = GUITestsPanel.this.runner.get();
-        if (r != null) {
-          GUITestsPanel.this.executor.execute(r);
-        }
-      }
-    });
-
-    this.button_save = new JButton("Save report...");
+    this.button_save =
+      new ButtonSaveReport(
+        this.logger,
+        this.xml_config,
+        this.executor,
+        this.runner);
     this.button_save.setEnabled(false);
 
     final DesignGridLayout dg_layout = new DesignGridLayout(this);
     dg_layout.row().grid().add(this.table_pane);
     dg_layout.row().grid().add(this.button_run).add(this.button_save);
 
-    this.listener = new RunnerListener(this.table_data, status);
+    this.listener =
+      new RunnerListener(
+        this.table_data,
+        logger,
+        this.button_run,
+        this.button_save);
+
     this.executor.execute(new RunnerInitializationTask(
       info,
-      status,
+      this.logger,
       this.runner,
       this.listener,
       this.button_run));
