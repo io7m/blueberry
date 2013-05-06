@@ -125,7 +125,7 @@ public final class TestsState implements ToXMLReport<TestReportConfig>
   @Override public @Nonnull Element toXML(
     final TestReportConfig config)
   {
-    final Element root = new Element("report", XMLVersion.XML_URI);
+    final Element root = new Element("report", TestReportXMLVersion.XML_URI);
     final Element classes = this.toXMLClasses();
 
     if (config.wantOutputEnvironment()) {
@@ -143,15 +143,15 @@ public final class TestsState implements ToXMLReport<TestReportConfig>
 
   private static @Nonnull Element toXMLEnvironment()
   {
-    final Element ee = new Element("system-environment", XMLVersion.XML_URI);
+    final Element ee = new Element("system-environment", TestReportXMLVersion.XML_URI);
     final Map<String, String> env = System.getenv();
 
     for (final Entry<String, String> e : env.entrySet()) {
       final Element p =
-        new Element("system-environment-variable", XMLVersion.XML_URI);
-      final Element pk = new Element("key", XMLVersion.XML_URI);
+        new Element("system-environment-variable", TestReportXMLVersion.XML_URI);
+      final Element pk = new Element("key", TestReportXMLVersion.XML_URI);
       pk.appendChild(e.getKey());
-      final Element pv = new Element("value", XMLVersion.XML_URI);
+      final Element pv = new Element("value", TestReportXMLVersion.XML_URI);
       pv.appendChild(e.getValue());
       p.appendChild(pk);
       p.appendChild(pv);
@@ -163,16 +163,16 @@ public final class TestsState implements ToXMLReport<TestReportConfig>
 
   private static @Nonnull Element toXMLProperties()
   {
-    final Element pe = new Element("system-properties", XMLVersion.XML_URI);
+    final Element pe = new Element("system-properties", TestReportXMLVersion.XML_URI);
     final Properties props = System.getProperties();
 
     for (final Entry<Object, Object> e : props.entrySet()) {
       final String key = (String) e.getKey();
       final String val = (String) e.getValue();
-      final Element p = new Element("system-property", XMLVersion.XML_URI);
-      final Element pk = new Element("key", XMLVersion.XML_URI);
+      final Element p = new Element("system-property", TestReportXMLVersion.XML_URI);
+      final Element pk = new Element("key", TestReportXMLVersion.XML_URI);
       pk.appendChild(key);
-      final Element pv = new Element("value", XMLVersion.XML_URI);
+      final Element pv = new Element("value", TestReportXMLVersion.XML_URI);
       pv.appendChild(val);
       p.appendChild(pk);
       p.appendChild(pv);
@@ -184,13 +184,13 @@ public final class TestsState implements ToXMLReport<TestReportConfig>
 
   private @Nonnull Element toXMLClasses()
   {
-    final Element classes = new Element("classes", XMLVersion.XML_URI);
+    final Element classes = new Element("classes", TestReportXMLVersion.XML_URI);
 
     for (final Entry<ClassName, HashMap<TestName, TestState>> ce : this.tests
       .entrySet()) {
       final ClassName class_name = ce.getKey();
       final HashMap<TestName, TestState> class_tests = ce.getValue();
-      final Element class_element = new Element("class", XMLVersion.XML_URI);
+      final Element class_element = new Element("class", TestReportXMLVersion.XML_URI);
       class_element.addAttribute(new Attribute("name", class_name.actual));
 
       for (final Entry<TestName, TestState> te : class_tests.entrySet()) {

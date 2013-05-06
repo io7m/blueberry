@@ -196,7 +196,7 @@ public class TestsStateTest
     final TestReportConfig config = new TestReportConfig();
 
     final XPathContext namespaces = new XPathContext();
-    namespaces.addNamespace("s", XMLVersion.XML_URI);
+    namespaces.addNamespace("s", TestReportXMLVersion.XML_URI);
 
     {
       config.setOutputSystemProperties(true);

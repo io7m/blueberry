@@ -22,7 +22,7 @@ package com.io7m.blueberry;
 
 import javax.annotation.Nonnull;
 
-public final class XMLVersion
+public final class TestReportXMLVersion
 {
   public static final @Nonnull String XML_URI = "http://www.io7m.com/software/blueberry/0.1.0";
 }

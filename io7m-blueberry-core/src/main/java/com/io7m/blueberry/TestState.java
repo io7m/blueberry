@@ -74,7 +74,7 @@ public abstract class TestState implements ToXMLReport<TestName>
     @Override public @Nonnull Element toXML(
       final @Nonnull TestName name)
     {
-      final Element e = new Element("test-missed", XMLVersion.XML_URI);
+      final Element e = new Element("test-missed", TestReportXMLVersion.XML_URI);
       e.addAttribute(new Attribute("name", name.actual));
       return e;
     }
@@ -105,13 +105,13 @@ public abstract class TestState implements ToXMLReport<TestName>
     @Override public @Nonnull Element toXML(
       final @Nonnull TestName name)
     {
-      final Element e = new Element("test-succeeded", XMLVersion.XML_URI);
+      final Element e = new Element("test-succeeded", TestReportXMLVersion.XML_URI);
       e.addAttribute(new Attribute("name", name.actual));
-      final Element oso = new Element("output-stdout", XMLVersion.XML_URI);
+      final Element oso = new Element("output-stdout", TestReportXMLVersion.XML_URI);
       oso.appendChild(this.output_stdout.toString());
-      final Element ose = new Element("output-stderr", XMLVersion.XML_URI);
+      final Element ose = new Element("output-stderr", TestReportXMLVersion.XML_URI);
       ose.appendChild(this.output_stderr.toString());
-      final Element em = new Element("elapsed-nanos", XMLVersion.XML_URI);
+      final Element em = new Element("elapsed-nanos", TestReportXMLVersion.XML_URI);
       em.appendChild(Long.toString(this.time_elapsed_nano));
 
       e.appendChild(oso);
@@ -135,9 +135,9 @@ public abstract class TestState implements ToXMLReport<TestName>
     @Override public @Nonnull Element toXML(
       final @Nonnull TestName name)
     {
-      final Element e = new Element("test-skipped", XMLVersion.XML_URI);
+      final Element e = new Element("test-skipped", TestReportXMLVersion.XML_URI);
       e.addAttribute(new Attribute("name", name.actual));
-      final Element er = new Element("reason", XMLVersion.XML_URI);
+      final Element er = new Element("reason", TestReportXMLVersion.XML_URI);
       er.appendChild(this.reason);
       e.appendChild(er);
       return e;
@@ -173,14 +173,14 @@ public abstract class TestState implements ToXMLReport<TestName>
     private static @Nonnull Element traceElementToXML(
       final @Nonnull StackTraceElement trace)
     {
-      final Element t = new Element("trace", XMLVersion.XML_URI);
-      final Element tc = new Element("trace-class", XMLVersion.XML_URI);
+      final Element t = new Element("trace", TestReportXMLVersion.XML_URI);
+      final Element tc = new Element("trace-class", TestReportXMLVersion.XML_URI);
       tc.appendChild(trace.getClassName());
-      final Element tm = new Element("trace-method", XMLVersion.XML_URI);
+      final Element tm = new Element("trace-method", TestReportXMLVersion.XML_URI);
       tm.appendChild(trace.getMethodName());
-      final Element tf = new Element("trace-file", XMLVersion.XML_URI);
+      final Element tf = new Element("trace-file", TestReportXMLVersion.XML_URI);
       tf.appendChild(trace.getFileName());
-      final Element tl = new Element("trace-line", XMLVersion.XML_URI);
+      final Element tl = new Element("trace-line", TestReportXMLVersion.XML_URI);
       tl.appendChild(Integer.toString(trace.getLineNumber()));
       t.appendChild(tc);
       t.appendChild(tm);
@@ -192,19 +192,19 @@ public abstract class TestState implements ToXMLReport<TestName>
     @Override public @Nonnull Element toXML(
       final @Nonnull TestName name)
     {
-      final Element e = new Element("test-failed", XMLVersion.XML_URI);
+      final Element e = new Element("test-failed", TestReportXMLVersion.XML_URI);
       e.addAttribute(new Attribute("name", name.actual));
-      final Element oso = new Element("output-stdout", XMLVersion.XML_URI);
+      final Element oso = new Element("output-stdout", TestReportXMLVersion.XML_URI);
       oso.appendChild(this.output_stdout.toString());
-      final Element ose = new Element("output-stderr", XMLVersion.XML_URI);
+      final Element ose = new Element("output-stderr", TestReportXMLVersion.XML_URI);
       ose.appendChild(this.output_stderr.toString());
-      final Element em = new Element("elapsed-nanos", XMLVersion.XML_URI);
+      final Element em = new Element("elapsed-nanos", TestReportXMLVersion.XML_URI);
       em.appendChild(Long.toString(this.time_elapsed_nano));
 
-      final Element xs = new Element("exceptions", XMLVersion.XML_URI);
+      final Element xs = new Element("exceptions", TestReportXMLVersion.XML_URI);
       Throwable error = this.throwable;
       for (int index = 0; index < Failed.STACK_TRACE_LIMIT; ++index) {
-        final Element x = new Element("exception", XMLVersion.XML_URI);
+        final Element x = new Element("exception", TestReportXMLVersion.XML_URI);
         x.addAttribute(new Attribute("type", error
           .getClass()
           .getCanonicalName()));
