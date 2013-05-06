@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
   <name>io7m-blueberry-gui-example</name>
   <description>End-user automated junit test runner (gui-example)</description>
-  <url>http://mvn.io7m.com/blueberry/</url>
+  <url>http://mvn.io7m.com/blueberry-gui-example/</url>
 
   <licenses>
     <license>

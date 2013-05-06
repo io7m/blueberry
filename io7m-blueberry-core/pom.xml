@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
   <name>io7m-blueberry-core</name>
   <description>End-user automated junit test runner (core)</description>
-  <url>http://mvn.io7m.com/blueberry/</url>
+  <url>http://mvn.io7m.com/blueberry-core/</url>
 
   <licenses>
     <license>

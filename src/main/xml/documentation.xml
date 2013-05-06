@@ -210,7 +210,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.]]>
           package delivered to end-users. The package is also integrated
           with <s:term type="package">blueberry</s:term> in some manner. The
           precise meaning of "integration" is up to the developer using the
-          package (as there are numerous optional parts to the
+          package, as there are numerous optional parts to the
           <s:term type="package">blueberry</s:term> package).
           Most developers will probably want to use the
           <s:term type="package">blueberry</s:term>

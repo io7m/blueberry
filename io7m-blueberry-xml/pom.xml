@@ -11,7 +11,7 @@
   <packaging>jar</packaging>
   <name>io7m-blueberry-xml</name>
   <description>End-user automated junit test runner (xml)</description>
-  <url>http://mvn.io7m.com/blueberry/</url>
+  <url>http://mvn.io7m.com/blueberry-xml/</url>
 
   <licenses>
     <license>
