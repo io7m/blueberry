@@ -10,10 +10,9 @@
 
   <body>
     <subsection name="blueberry">
-      The <var>blueberry</var> package implements a self-testing shell
-      for applications. Specifically, the <var>blueberry</var> test runner
-      scans the running program for JUnit tests using Java reflection,
-      executes them, and produces an XML report of the results.
+      The <var>blueberry</var> package implements a system that allows non-technical
+      users to participate in unit-testing of software without having to install any
+      development tools or have access to the software's source code.
     </subsection>
   </body>
 
