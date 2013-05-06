@@ -496,10 +496,24 @@ final class GUITestsPanel extends JPanel
     {
       final long time_before_load = System.nanoTime();
       final Set<Class<?>> classes = new HashSet<Class<?>>();
+
       for (final String prefix : this.info.getPackagePrefixes()) {
-        final Set<Class<?>> cs = TestScanning.getPackageClasses(prefix);
-        classes.addAll(cs);
+        try {
+          final Set<Class<?>> cs = TestScanning.getPackageClasses(prefix);
+          classes.addAll(cs);
+        } catch (final Throwable e) {
+          SwingUtilities.invokeLater(new Runnable() {
+            @SuppressWarnings("synthetic-access") @Override public void run()
+            {
+              final StringBuilder buffer = new StringBuilder();
+              buffer.append("Error loading classes: ");
+              buffer.append(e.getMessage());
+              RunnerInitializationTask.this.logger.write(buffer.toString());
+            }
+          });
+        }
       }
+
       this.load_time = System.nanoTime() - time_before_load;
       return classes;
     }
