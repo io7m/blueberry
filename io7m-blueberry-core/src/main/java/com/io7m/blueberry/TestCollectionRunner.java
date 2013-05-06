@@ -72,7 +72,7 @@ public final class TestCollectionRunner implements
    * all unit tests on a separate thread.
    * </p>
    * 
-   * @see #TestSuiteRunner(TestStateListener, Set)
+   * @see #TestCollectionRunner(TestStateListener, Set)
    */
 
   @Override public void run()

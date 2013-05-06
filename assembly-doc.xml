@@ -27,7 +27,7 @@
   </fileSets>
   <files>
     <file>
-      <source>${project.basedir}/io7m-blueberry-xml/target/classes/blueberry-report.rng</source>
+      <source>${project.basedir}/io7m-blueberry-core/src/main/rng/blueberry-report.rng</source>
       <outputDirectory>/</outputDirectory>
     </file>
   </files>
