@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.NumberFormat;
 import java.util.HashSet;
@@ -55,6 +56,7 @@ import nu.xom.Element;
 import nu.xom.Serializer;
 
 import com.io7m.blueberry.ClassName;
+import com.io7m.blueberry.StringBuilderOutputStream;
 import com.io7m.blueberry.TestCollectionRunner;
 import com.io7m.blueberry.TestName;
 import com.io7m.blueberry.TestReportConfig;
@@ -505,10 +507,25 @@ final class GUITestsPanel extends JPanel
           SwingUtilities.invokeLater(new Runnable() {
             @SuppressWarnings("synthetic-access") @Override public void run()
             {
-              final StringBuilder buffer = new StringBuilder();
-              buffer.append("Error loading classes: ");
-              buffer.append(e.getMessage());
-              RunnerInitializationTask.this.logger.write(buffer.toString());
+              final StringBuilderOutputStream stream =
+                new StringBuilderOutputStream();
+              final PrintWriter pw = new PrintWriter(stream);
+
+              pw.write("Error loading classes: ");
+              pw.write(e.getMessage());
+              pw.write("\n");
+              e.printStackTrace(pw);
+              pw.flush();
+
+              RunnerInitializationTask.this.logger.write(stream
+                .getBuffer()
+                .toString());
+
+              try {
+                stream.close();
+              } catch (final IOException _) {
+                // Ignore
+              }
             }
           });
         }
