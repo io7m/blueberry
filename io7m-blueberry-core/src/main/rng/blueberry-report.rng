@@ -40,6 +40,17 @@
     </r:optional>
   </r:define>
 
+  <r:define name="io7m.blueberry-0.1.0.space-attribute">
+    <r:optional>
+      <r:attribute name="xml:space">
+        <r:choice>
+          <r:value>default</r:value>
+          <r:value>preserve</r:value>
+        </r:choice>
+      </r:attribute>
+    </r:optional>
+  </r:define>
+
   <r:define name="io7m.blueberry-0.1.0.trace-class">
     <r:element name="b:trace-class">
       <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
@@ -90,6 +101,7 @@
   <r:define name="io7m.blueberry-0.1.0.output-stdout">
     <r:element name="b:output-stdout">
       <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="io7m.blueberry-0.1.0.space-attribute"/>
       <r:text/>
     </r:element>
   </r:define>
@@ -97,6 +109,7 @@
   <r:define name="io7m.blueberry-0.1.0.output-stderr">
     <r:element name="b:output-stderr">
       <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="io7m.blueberry-0.1.0.space-attribute"/>
       <r:text/>
     </r:element>
   </r:define>
