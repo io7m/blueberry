@@ -55,14 +55,14 @@ import nu.xom.Element;
 import nu.xom.Serializer;
 
 import com.io7m.blueberry.ClassName;
-import com.io7m.blueberry.TestScanning;
+import com.io7m.blueberry.TestCollectionRunner;
 import com.io7m.blueberry.TestName;
 import com.io7m.blueberry.TestReportConfig;
+import com.io7m.blueberry.TestScanning;
 import com.io7m.blueberry.TestState;
 import com.io7m.blueberry.TestState.Failed;
 import com.io7m.blueberry.TestState.Succeeded;
 import com.io7m.blueberry.TestStateListener;
-import com.io7m.blueberry.TestCollectionRunner;
 
 /**
  * The main testing panel.
@@ -321,25 +321,30 @@ final class GUITestsPanel extends JPanel
     }
   }
 
-  private final @Nonnull TestsTableModel                  table_data;
-  private final @Nonnull TestsTable                       table;
-  private final @Nonnull JScrollPane                      table_pane;
-  private final @Nonnull ButtonRun                        button_run;
-  private final @Nonnull ButtonSaveReport                 button_save;
-  private final @Nonnull GUIProjectInfo                   info;
-  private final @Nonnull Executor                         executor;
+  private final @Nonnull TestsTableModel                       table_data;
+  private final @Nonnull TestsTable                            table;
+  private final @Nonnull JScrollPane                           table_pane;
+  private final @Nonnull ButtonRun                             button_run;
+  private final @Nonnull ButtonSaveReport                      button_save;
+  private final @Nonnull GUIProjectInfo                        info;
+  private final @Nonnull Executor                              executor;
   private final @Nonnull AtomicReference<TestCollectionRunner> runner;
-  private final @Nonnull RunnerListener                   listener;
-  private final @Nonnull TestReportConfig                 xml_config;
-  private final @Nonnull GUILogger                        logger;
+  private final @Nonnull RunnerListener                        listener;
+  private final @Nonnull TestReportConfig                      xml_config;
+  private final @Nonnull GUILogger                             logger;
 
   private static class RunnerListener implements TestStateListener
   {
     private final @Nonnull TestsTableModel  table_data;
     private final @Nonnull GUILogger        logger;
-    private long                            test_total = 0;
+    private long                            test_total      = 0;
     private final @Nonnull ButtonRun        button_run;
     private final @Nonnull ButtonSaveReport button_save;
+
+    private long                            tests_run       = 0;
+    private long                            tests_succeeded = 0;
+    private long                            tests_skipped   = 0;
+    private long                            tests_failed    = 0;
 
     public RunnerListener(
       final @Nonnull TestsTableModel table_data,
@@ -387,6 +392,23 @@ final class GUITestsPanel extends JPanel
       SwingUtilities.invokeLater(new Runnable() {
         @SuppressWarnings("synthetic-access") @Override public void run()
         {
+          switch (state.getType()) {
+            case STATE_INITIALIZED:
+              break;
+            case STATE_FAILED:
+              ++RunnerListener.this.tests_failed;
+              ++RunnerListener.this.tests_run;
+              break;
+            case STATE_SKIPPED:
+              ++RunnerListener.this.tests_skipped;
+              ++RunnerListener.this.tests_run;
+              break;
+            case STATE_SUCCEEDED:
+              ++RunnerListener.this.tests_succeeded;
+              ++RunnerListener.this.tests_run;
+              break;
+          }
+
           RunnerListener.this.table_data
             .testStateSet(class_name, test, state);
         }
@@ -398,7 +420,19 @@ final class GUITestsPanel extends JPanel
       SwingUtilities.invokeLater(new Runnable() {
         @SuppressWarnings("synthetic-access") @Override public void run()
         {
-          RunnerListener.this.logger.write("Test run completed");
+          final StringBuilder b = new StringBuilder();
+          b.append("Test run completed ");
+          b.append("(");
+          b.append(RunnerListener.this.tests_run);
+          b.append(" executed, ");
+          b.append(RunnerListener.this.tests_succeeded);
+          b.append(" succeeded, ");
+          b.append(RunnerListener.this.tests_failed);
+          b.append(" failed, ");
+          b.append(RunnerListener.this.tests_skipped);
+          b.append(" skipped)");
+
+          RunnerListener.this.logger.write(b.toString());
           RunnerListener.this.button_save.setEnabled(true);
         }
       });
@@ -436,12 +470,13 @@ final class GUITestsPanel extends JPanel
 
   private static class RunnerInitializationTask implements Runnable
   {
-    private long                                            load_time = 0;
-    private final @Nonnull GUIProjectInfo                   info;
-    private final @Nonnull GUILogger                        logger;
+    private long                                                 load_time =
+                                                                             0;
+    private final @Nonnull GUIProjectInfo                        info;
+    private final @Nonnull GUILogger                             logger;
     private final @Nonnull AtomicReference<TestCollectionRunner> runner;
-    private final @Nonnull RunnerListener                   listener;
-    private final @Nonnull JButton                          button;
+    private final @Nonnull RunnerListener                        listener;
+    private final @Nonnull JButton                               button;
 
     public RunnerInitializationTask(
       final @Nonnull GUIProjectInfo info,
