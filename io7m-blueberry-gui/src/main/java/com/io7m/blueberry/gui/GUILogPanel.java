@@ -22,6 +22,7 @@ import javax.annotation.Nonnull;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import net.java.dev.designgridlayout.DesignGridLayout;
 
@@ -46,9 +47,13 @@ final class GUILogPanel extends JPanel
     this.text_area.setEditable(false);
     this.text_area.setFont(Font.decode(Font.MONOSPACED + " 9"));
     this.scrollpane = new JScrollPane(this.text_area);
+    this.scrollpane
+      .setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
     final DesignGridLayout tp_layout = new DesignGridLayout(this);
     tp_layout.row().grid().add(this.scrollpane);
+
+    this.scrollpane.setPreferredSize(this.getSize());
   }
 
   void write(
