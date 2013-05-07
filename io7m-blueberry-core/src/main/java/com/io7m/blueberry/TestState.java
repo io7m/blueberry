@@ -139,12 +139,18 @@ public abstract class TestState implements ToXMLReport<TestName>
 
   public static final class Skipped extends TestState
   {
-    private final @Nonnull String reason;
+    private final @Nonnull StringBuilder output_stdout;
+    private final @Nonnull StringBuilder output_stderr;
+    private final @Nonnull String        reason;
 
     @SuppressWarnings("synthetic-access") public Skipped(
+      final @Nonnull StringBuilder output_stdout,
+      final @Nonnull StringBuilder output_stderr,
       final @Nonnull String reason)
     {
       super(TestStateType.STATE_SKIPPED);
+      this.output_stderr = output_stderr;
+      this.output_stdout = output_stdout;
       this.reason = reason;
     }
 
@@ -154,9 +160,29 @@ public abstract class TestState implements ToXMLReport<TestName>
       final Element e =
         new Element("test-skipped", TestReportXMLVersion.XML_URI);
       e.addAttribute(new Attribute("name", name.actual));
+
       final Element er = new Element("reason", TestReportXMLVersion.XML_URI);
       er.appendChild(this.reason);
+
+      final Element oso =
+        new Element("output-stdout", TestReportXMLVersion.XML_URI);
+      oso.addAttribute(new Attribute(
+        "xml:space",
+        "http://www.w3.org/XML/1998/namespace",
+        "preserve"));
+      oso.appendChild(this.output_stdout.toString());
+
+      final Element ose =
+        new Element("output-stderr", TestReportXMLVersion.XML_URI);
+      ose.addAttribute(new Attribute(
+        "xml:space",
+        "http://www.w3.org/XML/1998/namespace",
+        "preserve"));
+      ose.appendChild(this.output_stderr.toString());
+
       e.appendChild(er);
+      e.appendChild(oso);
+      e.appendChild(ose);
       return e;
     }
   }

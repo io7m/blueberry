@@ -154,7 +154,10 @@ public final class TestCollectionRunner implements
             {
               this.result_type = TestStateType.STATE_SKIPPED;
               final Skipped state =
-                new TestState.Skipped("Assumption failed");
+                new TestState.Skipped(
+                  this.output_stderr.getBuffer(),
+                  this.output_stdout.getBuffer(),
+                  "Assumption failed");
               TestCollectionRunner.this.states.testsStatePut(
                 class_name,
                 this.test_name,
@@ -168,8 +171,17 @@ public final class TestCollectionRunner implements
             {
               this.result_type = TestStateType.STATE_SKIPPED;
               this.test_name = new TestName(description.getMethodName());
+
+              /**
+               * Note that fireTestStarted() will not have been called here,
+               * so the output buffers will not have been initialized.
+               */
+
               final Skipped state =
-                new TestState.Skipped("@Ignore annotation");
+                new TestState.Skipped(
+                  new StringBuilder(),
+                  new StringBuilder(),
+                  "@Ignore annotation");
               TestCollectionRunner.this.states.testsStatePut(
                 class_name,
                 this.test_name,

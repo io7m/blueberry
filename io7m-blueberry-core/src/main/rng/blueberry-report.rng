@@ -169,9 +169,13 @@
       <r:attribute name="name">
         <r:text/>
       </r:attribute>
-      <r:element name="b:reason">
-        <r:text/>
-      </r:element>
+      <r:interleave>
+        <r:element name="b:reason">
+          <r:text/>
+        </r:element>
+        <r:ref name="io7m.blueberry-0.1.0.output-stdout"/>
+        <r:ref name="io7m.blueberry-0.1.0.output-stderr"/>
+      </r:interleave>
     </r:element>
   </r:define>
   
