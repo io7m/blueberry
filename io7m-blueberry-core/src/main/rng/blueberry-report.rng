@@ -114,6 +114,13 @@
     </r:element>
   </r:define>
 
+  <r:define name="io7m.blueberry-0.1.0.message">
+    <r:element name="b:message">
+      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:text/>
+    </r:element>
+  </r:define>
+
   <r:define name="io7m.blueberry-0.1.0.exception">
     <r:element name="b:exception">
       <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
@@ -123,9 +130,12 @@
       <r:attribute name="level">
         <r:data type="integer"/>
       </r:attribute>
-      <r:zeroOrMore>
-        <r:ref name="io7m.blueberry-0.1.0.trace"/>
-      </r:zeroOrMore>
+      <r:interleave>
+        <r:ref name="io7m.blueberry-0.1.0.message"/>
+        <r:zeroOrMore>
+          <r:ref name="io7m.blueberry-0.1.0.trace"/>
+        </r:zeroOrMore>
+      </r:interleave>
     </r:element>
   </r:define>
 

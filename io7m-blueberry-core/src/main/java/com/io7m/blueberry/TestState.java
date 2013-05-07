@@ -239,6 +239,7 @@ public abstract class TestState implements ToXMLReport<TestName>
 
       final Element xs =
         new Element("exceptions", TestReportXMLVersion.XML_URI);
+
       Throwable error = this.throwable;
       for (int index = 0; index < Failed.STACK_TRACE_LIMIT; ++index) {
         final Element x =
@@ -247,6 +248,12 @@ public abstract class TestState implements ToXMLReport<TestName>
           .getClass()
           .getCanonicalName()));
         x.addAttribute(new Attribute("level", Integer.toString(index)));
+
+        final Element xm =
+          new Element("message", TestReportXMLVersion.XML_URI);
+        xm.appendChild(error.getMessage());
+        x.appendChild(xm);
+
         final StackTraceElement[] st = error.getStackTrace();
         for (final StackTraceElement trace : st) {
           x.appendChild(Failed.traceElementToXML(trace));
