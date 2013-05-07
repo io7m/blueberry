@@ -216,12 +216,23 @@ public abstract class TestState implements ToXMLReport<TestName>
       final Element e =
         new Element("test-failed", TestReportXMLVersion.XML_URI);
       e.addAttribute(new Attribute("name", name.actual));
+
       final Element oso =
         new Element("output-stdout", TestReportXMLVersion.XML_URI);
+      oso.addAttribute(new Attribute(
+        "xml:space",
+        "http://www.w3.org/XML/1998/namespace",
+        "preserve"));
       oso.appendChild(this.output_stdout.toString());
+
       final Element ose =
         new Element("output-stderr", TestReportXMLVersion.XML_URI);
+      ose.addAttribute(new Attribute(
+        "xml:space",
+        "http://www.w3.org/XML/1998/namespace",
+        "preserve"));
       ose.appendChild(this.output_stderr.toString());
+
       final Element em =
         new Element("elapsed-nanos", TestReportXMLVersion.XML_URI);
       em.appendChild(Long.toString(this.time_elapsed_nano));
