@@ -38,7 +38,7 @@ public final class StringBuilderOutputStream extends OutputStream
     final int b)
     throws IOException
   {
-    this.buffer.append((byte) b);
+    this.buffer.append((char) (b & 0xff));
   }
 
   /**
