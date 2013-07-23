@@ -10,9 +10,14 @@
 
   <body>
     <subsection name="blueberry">
+      <p>
       The <var>blueberry</var> package implements a system that allows non-technical
       users to participate in unit-testing of software without having to install any
       development tools or have access to the software's source code.
+      </p>
+      <p>
+        <img src="example-test.png" alt="Example test runner"/>
+      </p>
     </subsection>
   </body>
 
