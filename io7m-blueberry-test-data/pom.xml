@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.io7m.blueberry</groupId>
   <artifactId>io7m-blueberry-test-data</artifactId>
-  <version>0.2.0</version>
+  <version>0.2.1</version>
   <packaging>jar</packaging>
   <name>io7m-blueberry-test-data</name>
   <description>End-user automated junit test runner (test data)</description>
