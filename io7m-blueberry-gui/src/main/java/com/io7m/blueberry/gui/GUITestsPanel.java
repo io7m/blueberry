@@ -28,10 +28,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -691,8 +694,17 @@ final class GUITestsPanel extends JPanel
                 SwingUtilities.invokeLater(new Runnable() {
                   @Override public void run()
                   {
+                    final Calendar cal =
+                      Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                    final SimpleDateFormat df =
+                      new SimpleDateFormat("yyyy-MM-dd_hhmmss");
+                    final StringBuilder name = new StringBuilder();
+                    name.append("report-");
+                    name.append(df.format(cal.getTime()));
+                    name.append(".xml.gz");
+
                     final JFileChooser fc = new JFileChooser();
-                    fc.setSelectedFile(new File("report.xml.gz"));
+                    fc.setSelectedFile(new File(name.toString()));
                     final int result =
                       fc.showSaveDialog(ButtonSaveReport.this);
 
