@@ -1,7 +1,7 @@
 <xt:stylesheet version="2.0"
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:xt="http://www.w3.org/1999/XSL/Transform"
-  xmlns:b="http://www.io7m.com/software/blueberry/0.1.0">
+  xmlns:b="http://schemas.io7m.com/blueberry/1.0.0">
 
   <xt:output encoding="UTF-8" method="text" indent="yes"/>
 

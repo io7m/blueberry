@@ -17,17 +17,17 @@
 -->
 
 <r:grammar
-  xmlns:b="http://www.io7m.com/software/blueberry/0.1.0"
+  xmlns:b="http://schemas.io7m.com/blueberry/1.0.0"
   xmlns:r="http://relaxng.org/ns/structure/1.0"
   datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
 
   <r:start combine="choice">
     <r:choice>
-      <r:ref name="io7m.blueberry-0.1.0.report"/>
+      <r:ref name="blueberry.report"/>
     </r:choice>
   </r:start>
 
-  <r:define name="io7m.blueberry-0.1.0.standard-attributes">
+  <r:define name="blueberry.standard-attributes">
     <r:optional>
       <r:attribute name="xml:base">
         <r:text/>
@@ -40,7 +40,7 @@
     </r:optional>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.space-attribute">
+  <r:define name="blueberry.space-attribute">
     <r:optional>
       <r:attribute name="xml:space">
         <r:choice>
@@ -51,79 +51,79 @@
     </r:optional>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.trace-class">
+  <r:define name="blueberry.trace-class">
     <r:element name="b:trace-class">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:text/>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.trace-method">
+  <r:define name="blueberry.trace-method">
     <r:element name="b:trace-method">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:text/>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.trace-file">
+  <r:define name="blueberry.trace-file">
     <r:element name="b:trace-file">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:text/>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.trace-line">
+  <r:define name="blueberry.trace-line">
     <r:element name="b:trace-line">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:data type="integer"/>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.trace">
+  <r:define name="blueberry.trace">
     <r:element name="b:trace">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:interleave>
-        <r:ref name="io7m.blueberry-0.1.0.trace-class"/>
-        <r:ref name="io7m.blueberry-0.1.0.trace-method"/>
-        <r:ref name="io7m.blueberry-0.1.0.trace-file"/>
-        <r:ref name="io7m.blueberry-0.1.0.trace-line"/>
+        <r:ref name="blueberry.trace-class"/>
+        <r:ref name="blueberry.trace-method"/>
+        <r:ref name="blueberry.trace-file"/>
+        <r:ref name="blueberry.trace-line"/>
       </r:interleave>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.elapsed-nanos">
+  <r:define name="blueberry.elapsed-nanos">
     <r:element name="b:elapsed-nanos">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:data type="unsignedLong"/>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.output-stdout">
+  <r:define name="blueberry.output-stdout">
     <r:element name="b:output-stdout">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
-      <r:ref name="io7m.blueberry-0.1.0.space-attribute"/>
+      <r:ref name="blueberry.standard-attributes"/>
+      <r:ref name="blueberry.space-attribute"/>
       <r:text/>
     </r:element>
   </r:define>
   
-  <r:define name="io7m.blueberry-0.1.0.output-stderr">
+  <r:define name="blueberry.output-stderr">
     <r:element name="b:output-stderr">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
-      <r:ref name="io7m.blueberry-0.1.0.space-attribute"/>
+      <r:ref name="blueberry.standard-attributes"/>
+      <r:ref name="blueberry.space-attribute"/>
       <r:text/>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.message">
+  <r:define name="blueberry.message">
     <r:element name="b:message">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:text/>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.exception">
+  <r:define name="blueberry.exception">
     <r:element name="b:exception">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:attribute name="type">
         <r:text/>
       </r:attribute>
@@ -131,41 +131,41 @@
         <r:data type="integer"/>
       </r:attribute>
       <r:interleave>
-        <r:ref name="io7m.blueberry-0.1.0.message"/>
+        <r:ref name="blueberry.message"/>
         <r:zeroOrMore>
-          <r:ref name="io7m.blueberry-0.1.0.trace"/>
+          <r:ref name="blueberry.trace"/>
         </r:zeroOrMore>
       </r:interleave>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.exceptions">
+  <r:define name="blueberry.exceptions">
     <r:element name="b:exceptions">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:zeroOrMore>
-        <r:ref name="io7m.blueberry-0.1.0.exception"/>
+        <r:ref name="blueberry.exception"/>
       </r:zeroOrMore>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.test-failed">
+  <r:define name="blueberry.test-failed">
     <r:element name="b:test-failed">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:attribute name="name">
         <r:text/>
       </r:attribute>
       <r:interleave>
-        <r:ref name="io7m.blueberry-0.1.0.elapsed-nanos"/>
-        <r:ref name="io7m.blueberry-0.1.0.exceptions"/>
-        <r:ref name="io7m.blueberry-0.1.0.output-stdout"/>
-        <r:ref name="io7m.blueberry-0.1.0.output-stderr"/>
+        <r:ref name="blueberry.elapsed-nanos"/>
+        <r:ref name="blueberry.exceptions"/>
+        <r:ref name="blueberry.output-stdout"/>
+        <r:ref name="blueberry.output-stderr"/>
       </r:interleave>
     </r:element>
   </r:define>
   
-  <r:define name="io7m.blueberry-0.1.0.test-skipped">
+  <r:define name="blueberry.test-skipped">
     <r:element name="b:test-skipped">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:attribute name="name">
         <r:text/>
       </r:attribute>
@@ -173,15 +173,15 @@
         <r:element name="b:reason">
           <r:text/>
         </r:element>
-        <r:ref name="io7m.blueberry-0.1.0.output-stdout"/>
-        <r:ref name="io7m.blueberry-0.1.0.output-stderr"/>
+        <r:ref name="blueberry.output-stdout"/>
+        <r:ref name="blueberry.output-stderr"/>
       </r:interleave>
     </r:element>
   </r:define>
   
-  <r:define name="io7m.blueberry-0.1.0.test-missed">
+  <r:define name="blueberry.test-missed">
     <r:element name="b:test-missed">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:attribute name="name">
         <r:text/>
       </r:attribute>
@@ -189,49 +189,49 @@
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.test-succeeded">
+  <r:define name="blueberry.test-succeeded">
     <r:element name="b:test-succeeded">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:attribute name="name">
         <r:text/>
       </r:attribute>
       <r:interleave>
-        <r:ref name="io7m.blueberry-0.1.0.elapsed-nanos"/>
-        <r:ref name="io7m.blueberry-0.1.0.output-stdout"/>
-        <r:ref name="io7m.blueberry-0.1.0.output-stderr"/>
+        <r:ref name="blueberry.elapsed-nanos"/>
+        <r:ref name="blueberry.output-stdout"/>
+        <r:ref name="blueberry.output-stderr"/>
       </r:interleave>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.class">
+  <r:define name="blueberry.class">
     <r:element name="b:class">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:attribute name="name">
         <r:text/>
       </r:attribute>
       <r:zeroOrMore>
         <r:choice>
-          <r:ref name="io7m.blueberry-0.1.0.test-succeeded"/>
-          <r:ref name="io7m.blueberry-0.1.0.test-failed"/>
-          <r:ref name="io7m.blueberry-0.1.0.test-skipped"/>
-          <r:ref name="io7m.blueberry-0.1.0.test-missed"/>
+          <r:ref name="blueberry.test-succeeded"/>
+          <r:ref name="blueberry.test-failed"/>
+          <r:ref name="blueberry.test-skipped"/>
+          <r:ref name="blueberry.test-missed"/>
         </r:choice>
       </r:zeroOrMore>
     </r:element>
   </r:define>
   
-  <r:define name="io7m.blueberry-0.1.0.classes">
+  <r:define name="blueberry.classes">
     <r:element name="b:classes">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:zeroOrMore>
-        <r:ref name="io7m.blueberry-0.1.0.class"/>
+        <r:ref name="blueberry.class"/>
       </r:zeroOrMore>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.system-environment-variable">
+  <r:define name="blueberry.system-environment-variable">
     <r:element name="b:system-environment-variable">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:interleave>
         <r:element name="b:key">
           <r:text/>
@@ -243,18 +243,18 @@
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.system-environment">
+  <r:define name="blueberry.system-environment">
     <r:element name="b:system-environment">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:zeroOrMore>
-        <r:ref name="io7m.blueberry-0.1.0.system-environment-variable"/>
+        <r:ref name="blueberry.system-environment-variable"/>
       </r:zeroOrMore>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.system-property">
+  <r:define name="blueberry.system-property">
     <r:element name="b:system-property">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:interleave>
         <r:element name="b:key">
           <r:text/>
@@ -266,25 +266,25 @@
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.system-properties">
+  <r:define name="blueberry.system-properties">
     <r:element name="b:system-properties">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:zeroOrMore>
-        <r:ref name="io7m.blueberry-0.1.0.system-property"/>
+        <r:ref name="blueberry.system-property"/>
       </r:zeroOrMore>
     </r:element>
   </r:define>
 
-  <r:define name="io7m.blueberry-0.1.0.report">
+  <r:define name="blueberry.report">
     <r:element name="b:report">
-      <r:ref name="io7m.blueberry-0.1.0.standard-attributes"/>
+      <r:ref name="blueberry.standard-attributes"/>
       <r:interleave>
-        <r:ref name="io7m.blueberry-0.1.0.classes"/>
+        <r:ref name="blueberry.classes"/>
         <r:optional>
-          <r:ref name="io7m.blueberry-0.1.0.system-properties"/>
+          <r:ref name="blueberry.system-properties"/>
         </r:optional>
         <r:optional>
-          <r:ref name="io7m.blueberry-0.1.0.system-environment"/>
+          <r:ref name="blueberry.system-environment"/>
         </r:optional>
       </r:interleave>
     </r:element>
