@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 <code@io7m.com> http://io7m.com
+ * Copyright © 2014 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,14 +18,15 @@ package com.io7m.blueberry.gui;
 
 import java.awt.FlowLayout;
 import java.net.MalformedURLException;
+import java.net.URI;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import net.java.dev.designgridlayout.DesignGridLayout;
+
+import com.io7m.jnull.Nullable;
 
 /**
  * The project info panel.
@@ -33,23 +34,24 @@ import net.java.dev.designgridlayout.DesignGridLayout;
 
 final class GUIInfoPanel extends JPanel
 {
-  private static final long             serialVersionUID;
+  private static final long         serialVersionUID;
 
   static {
     serialVersionUID = -2865822489490944908L;
   }
 
-  private final @CheckForNull ImageIcon icon;
-  private final @Nonnull JLabel         icon_label;
-  private final @Nonnull JLabel         project_label;
-  private final @Nonnull JLabel         project_uri_label;
+  private final @Nullable ImageIcon icon;
+  private final JLabel              icon_label;
+  private final JLabel              project_label;
+  private final JLabel              project_uri_label;
 
-  private static @CheckForNull ImageIcon makeIcon(
-    final @Nonnull GUIProjectInfo info)
+  private static @Nullable ImageIcon makeIcon(
+    final GUIProjectInfo info)
   {
-    if (info.getProjectIcon() != null) {
+    final URI ico = info.getProjectIcon();
+    if (ico != null) {
       try {
-        return new ImageIcon(info.getProjectIcon().toURL());
+        return new ImageIcon(ico.toURL());
       } catch (final MalformedURLException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -60,11 +62,17 @@ final class GUIInfoPanel extends JPanel
   }
 
   GUIInfoPanel(
-    final @Nonnull GUIProjectInfo info)
+    final GUIProjectInfo info)
   {
     this.project_label =
       new JLabel(info.getProjectName() + " " + info.getProjectVersion());
-    this.project_uri_label = new JLabel(info.getProjectURI().toString());
+
+    final URI u = info.getProjectURI();
+    if (u != null) {
+      this.project_uri_label = new JLabel(u.toString());
+    } else {
+      this.project_uri_label = new JLabel();
+    }
 
     this.icon_label = new JLabel();
     this.icon = GUIInfoPanel.makeIcon(info);

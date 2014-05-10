@@ -5,13 +5,17 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.io7m.blueberry</groupId>
+  <parent>
+    <groupId>com.io7m.blueberry</groupId>
+    <artifactId>io7m-blueberry</artifactId>
+    <version>0.3.0</version>
+  </parent>
   <artifactId>io7m-blueberry-core</artifactId>
-  <version>0.2.1</version>
+
   <packaging>jar</packaging>
-  <name>io7m-blueberry-core</name>
-  <description>End-user automated junit test runner (core)</description>
-  <url>http://mvn.io7m.com/blueberry-core/</url>
+  <description>End-user automated junit test runner (Core)</description>
+  <url>http://mvn.io7m.com/${project.artifactId}/</url>
+  <name>${project.artifactId}</name>
 
   <licenses>
     <license>
@@ -44,7 +48,7 @@
     <site>
       <id>io7m</id>
       <name>io7m.com</name>
-      <url>http://mvn.io7m.com/blueberry-core/</url>
+      <url>${project.url}</url>
     </site>
   </distributionManagement>
 
@@ -69,6 +73,29 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.io7m.blueberry</groupId>
+      <artifactId>io7m-blueberry-test-data</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.io7m.jnull</groupId>
+      <artifactId>io7m-jnull-core</artifactId>
+      <version>[0.3.1, 0.4.0)</version>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.junreachable</groupId>
+      <artifactId>io7m-junreachable-core</artifactId>
+      <version>[0.3.0, 0.4.0)</version>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.xom</groupId>
+      <artifactId>xom</artifactId>
+      <version>1.2.10</version>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
@@ -82,17 +109,6 @@
       <groupId>org.reflections</groupId>
       <artifactId>reflections</artifactId>
       <version>0.9.9-RC1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.io7m.blueberry</groupId>
-      <artifactId>io7m-blueberry-test-data</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>xom</groupId>
-      <artifactId>xom</artifactId>
-      <version>1.2.5</version>
     </dependency>
   </dependencies>
 
@@ -175,15 +191,33 @@
               <Implementation-Vendor>io7m.com</Implementation-Vendor>
               <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
               <Built-By>io7m</Built-By>
+              <Sealed>true</Sealed>
             </manifestEntries>
-            <manifestSection>
-              <name>com/io7m/blueberry</name>
-              <manifestEntries>
-                <Sealed>true</Sealed>
-              </manifestEntries>
-            </manifestSection>
           </archive>
         </configuration>
+      </plugin>
+
+      <!-- Check style -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.11</version>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <configuration>
+              <configLocation>../checkstyle.xml</configLocation>
+              <encoding>UTF-8</encoding>
+              <consoleOutput>true</consoleOutput>
+              <failsOnError>true</failsOnError>
+              <linkXRef>false</linkXRef>
+            </configuration>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <!-- Create source jar -->
@@ -195,8 +229,22 @@
           <execution>
             <phase>package</phase>
             <goals>
-               <goal>jar</goal>
+              <goal>jar</goal>
             </goals>
+            <configuration>
+              <archive>
+                <manifestEntries>
+                  <Specification-Title>${project.name}</Specification-Title>
+                  <Specification-Version>${project.version}</Specification-Version>
+                  <Specification-Vendor>io7m.com</Specification-Vendor>
+                  <Implementation-Title>${project.name}</Implementation-Title>
+                  <Implementation-Version>${project.version}</Implementation-Version>
+                  <Implementation-Vendor>io7m.com</Implementation-Vendor>
+                  <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+                  <Built-By>io7m</Built-By>
+                </manifestEntries>
+              </archive>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -205,15 +253,30 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9</version>
+        <version>2.9.1</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>
             <phase>package</phase>
             <goals>
-               <goal>jar</goal>
+              <goal>jar</goal>
             </goals>
-         </execution>
+            <configuration>
+              <bottom><![CDATA[Copyright &#169; {currentYear} &lt;code@io7m.com&gt; http://io7m.com]]></bottom>
+              <archive>
+                <manifestEntries>
+                  <Specification-Title>${project.name}</Specification-Title>
+                  <Specification-Version>${project.version}</Specification-Version>
+                  <Specification-Vendor>io7m.com</Specification-Vendor>
+                  <Implementation-Title>${project.name}</Implementation-Title>
+                  <Implementation-Version>${project.version}</Implementation-Version>
+                  <Implementation-Vendor>io7m.com</Implementation-Vendor>
+                  <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+                  <Built-By>io7m</Built-By>
+                </manifestEntries>
+              </archive>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 

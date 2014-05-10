@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 <code@io7m.com> http://io7m.com
+ * Copyright © 2014 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,6 @@
 
 package com.io7m.blueberry.gui;
 
-import javax.annotation.Nonnull;
 import javax.swing.JFrame;
 
 import com.io7m.blueberry.TestReportConfig;
@@ -27,21 +26,34 @@ import com.io7m.blueberry.TestReportConfig;
 
 public final class GUI
 {
-  private final @Nonnull GUIMainWindow    main_window;
-  private final @Nonnull GUIProjectInfo   info;
-  private final @Nonnull TestReportConfig xml_config;
+  private final GUIMainWindow    main_window;
+  private final GUIProjectInfo   info;
+  private final TestReportConfig xml_config;
+
+  /**
+   * Construct a new GUI.
+   * 
+   * @param in_info
+   *          The project info.
+   * @param in_config
+   *          The configuration for the window.
+   */
 
   public GUI(
-    final @Nonnull GUIProjectInfo info,
-    final @Nonnull TestReportConfig xml_config)
+    final GUIProjectInfo in_info,
+    final TestReportConfig in_config)
   {
-    this.info = info;
-    this.xml_config = xml_config;
-    this.main_window = new GUIMainWindow(info, xml_config);
+    this.info = in_info;
+    this.xml_config = in_config;
+    this.main_window = new GUIMainWindow(in_info, in_config);
     this.main_window.setVisible(true);
   }
 
-  public @Nonnull JFrame getMainWindow()
+  /**
+   * @return The main window.
+   */
+
+  public JFrame getMainWindow()
   {
     return this.main_window;
   }

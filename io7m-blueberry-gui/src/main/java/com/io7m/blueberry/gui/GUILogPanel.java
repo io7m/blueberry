@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 <code@io7m.com> http://io7m.com
+ * Copyright © 2014 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,7 +18,6 @@ package com.io7m.blueberry.gui;
 
 import java.awt.Font;
 
-import javax.annotation.Nonnull;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -32,14 +31,14 @@ import net.java.dev.designgridlayout.DesignGridLayout;
 
 final class GUILogPanel extends JPanel
 {
-  private static final long          serialVersionUID;
+  private static final long serialVersionUID;
 
   static {
     serialVersionUID = -893271289371892391L;
   }
 
-  private final @Nonnull JTextArea   text_area;
-  private final @Nonnull JScrollPane scrollpane;
+  private final JTextArea   text_area;
+  private final JScrollPane scrollpane;
 
   GUILogPanel()
   {
@@ -57,7 +56,7 @@ final class GUILogPanel extends JPanel
   }
 
   void write(
-    final @Nonnull String message)
+    final String message)
   {
     this.text_area.append(message + "\n");
   }

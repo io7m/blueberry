@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 <code@io7m.com> http://io7m.com
+ * Copyright © 2014 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,6 +25,10 @@ public final class TestReportConfig
   private boolean output_environment       = true;
   private boolean output_system_properties = true;
 
+  /**
+   * Construct a new empty configuration.
+   */
+
   public TestReportConfig()
   {
 
@@ -33,6 +37,10 @@ public final class TestReportConfig
   /**
    * Set whether or not the contents of the JVM's environment should appear in
    * the resulting report.
+   * 
+   * @param output
+   *          <code>true</code> if the JVM's environment should appear in
+   *          reports.
    */
 
   public void setOutputEnvironment(
@@ -44,6 +52,10 @@ public final class TestReportConfig
   /**
    * Set whether or not the contents of the JVM's system properties should
    * appear in the resulting report.
+   * 
+   * @param output
+   *          <code>true</code> if the JVM's system properties should appear
+   *          in reports.
    */
 
   public void setOutputSystemProperties(
@@ -53,8 +65,8 @@ public final class TestReportConfig
   }
 
   /**
-   * Return <code>true</code> if the report will contain the contents of the
-   * JVM's environment.
+   * @return <code>true</code> if the report will contain the contents of the
+   *         JVM's environment.
    * 
    * @see #setOutputEnvironment(boolean)
    */
@@ -65,8 +77,8 @@ public final class TestReportConfig
   }
 
   /**
-   * Return <code>true</code> if the report will contain the contents of the
-   * JVM's system properties.
+   * @return <code>true</code> if the report will contain the contents of the
+   *         JVM's system properties.
    * 
    * @see #setOutputSystemProperties(boolean)
    */

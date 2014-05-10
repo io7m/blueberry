@@ -23,9 +23,16 @@ import javax.annotation.Nonnull;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.io7m.blueberry.test_data.TestAssumptionFailed;
+import com.io7m.blueberry.test_data.TestDataAllFail;
+import com.io7m.blueberry.test_data.TestDataAllPass;
+import com.io7m.blueberry.test_data.TestDataClassAssumptionFailed;
+import com.io7m.blueberry.test_data.TestDataExplosive;
+import com.io7m.blueberry.test_data.TestDataIgnored;
+
 public class TestSuiteRunnerTest
 {
-  static class FailureCounter implements TestStateListener
+  static class FailureCounter implements TestStateListenerType
   {
     int updates  = 0;
     int failures = 0;
@@ -78,7 +85,7 @@ public class TestSuiteRunnerTest
     }
   }
 
-  static class PassCounter implements TestStateListener
+  static class PassCounter implements TestStateListenerType
   {
     int updates  = 0;
     int succeeds = 0;
@@ -131,7 +138,7 @@ public class TestSuiteRunnerTest
     }
   }
 
-  static class SkipCounter implements TestStateListener
+  static class SkipCounter implements TestStateListenerType
   {
     int updates = 0;
     int skips   = 0;
@@ -260,7 +267,7 @@ public class TestSuiteRunnerTest
     Assert.assertEquals(3, counter.failures);
   }
 
-  static class Lifecycle implements TestStateListener
+  static class Lifecycle implements TestStateListenerType
   {
     boolean run_started  = false;
     boolean run_finished = false;

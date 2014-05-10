@@ -28,12 +28,16 @@ import nu.xom.XPathContext;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.io7m.blueberry.test_data.TestDataAllFail;
+import com.io7m.blueberry.test_data.TestDataAllPass;
+import com.io7m.blueberry.test_data.TestDataIgnored;
+
 public class TestsStateTest
 {
   @SuppressWarnings("static-method") @Test public void testEmpty()
   {
     @SuppressWarnings("unused") final TestsState tstate =
-      new TestsState(new HashSet<Class<?>>(), new TestStateListener() {
+      new TestsState(new HashSet<Class<?>>(), new TestStateListenerType() {
         @Override public void testStateUpdated(
           final @Nonnull ClassName class_name,
           final @Nonnull TestName test,
@@ -71,7 +75,7 @@ public class TestsStateTest
       });
   }
 
-  class Counter implements TestStateListener
+  class Counter implements TestStateListenerType
   {
     int creates = 0;
     int updates = 0;
@@ -152,7 +156,7 @@ public class TestsStateTest
     Assert.assertEquals(6, counter.updates);
   }
 
-  class IgnoreListener implements TestStateListener
+  class IgnoreListener implements TestStateListenerType
   {
     @Override public void testStateCreated(
       final ClassName class_name,

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 <code@io7m.com> http://io7m.com
+ * Copyright © 2014 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,9 +20,26 @@
 
 package com.io7m.blueberry;
 
-import javax.annotation.Nonnull;
+import com.io7m.junreachable.UnreachableCodeException;
+
+/**
+ * The XML URI of reports.
+ */
 
 public final class TestReportXMLVersion
 {
-  public static final @Nonnull String XML_URI = "http://www.io7m.com/software/blueberry/0.1.0";
+  private TestReportXMLVersion()
+  {
+    throw new UnreachableCodeException();
+  }
+
+  /**
+   * The XML URI of reports.
+   */
+
+  public static final String XML_URI;
+
+  static {
+    XML_URI = "http://schemas.io7m.com/blueberry/1.0.0";
+  }
 }
