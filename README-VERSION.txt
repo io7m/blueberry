@@ -1,1 +1,1 @@
-io7m-blueberry 0.2.1
+io7m-blueberry 0.3.0
