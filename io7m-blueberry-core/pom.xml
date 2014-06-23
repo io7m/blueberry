@@ -82,12 +82,12 @@
     <dependency>
       <groupId>com.io7m.jnull</groupId>
       <artifactId>io7m-jnull-core</artifactId>
-      <version>[0.3.1, 0.4.0)</version>
+      <version>[1.0.0, 2.0.0)</version>
     </dependency>
     <dependency>
       <groupId>com.io7m.junreachable</groupId>
       <artifactId>io7m-junreachable-core</artifactId>
-      <version>[0.3.0, 0.4.0)</version>
+      <version>[1.0.0, 2.0.0)</version>
     </dependency>
     <dependency>
       <groupId>com.io7m.xom</groupId>
@@ -99,11 +99,6 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-      <version>2.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.reflections</groupId>
