@@ -23,12 +23,17 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class TestClassesTest
+import com.io7m.blueberry.test_data.TestDataAllFail;
+import com.io7m.blueberry.test_data.TestDataAllPass;
+import com.io7m.blueberry.test_data.TestDataMethodCases;
+import com.io7m.blueberry.test_data.TestDataRunnableClass;
+import com.io7m.blueberry.test_data.TestDataUnrunnableClassAbstract;
+import com.io7m.blueberry.test_data.TestDataUnrunnableClassNoMethods;
+
+@SuppressWarnings("static-method") public class TestClassesTest
 {
-  @SuppressWarnings("static-method") @Test public
-    void
-    testIsTestMethodPrivateNotStatic()
-      throws NoSuchMethodException
+  @Test public void testIsTestMethodPrivateNotStatic()
+    throws NoSuchMethodException
   {
     final TestDataMethodCases mc = new TestDataMethodCases();
     final Class<? extends TestDataMethodCases> c = mc.getClass();
@@ -37,10 +42,8 @@ public class TestClassesTest
     Assert.assertFalse(TestScanning.isTestMethod(m));
   }
 
-  @SuppressWarnings("static-method") @Test public
-    void
-    testIsTestMethodPrivateAndStatic()
-      throws NoSuchMethodException
+  @Test public void testIsTestMethodPrivateAndStatic()
+    throws NoSuchMethodException
   {
     final TestDataMethodCases mc = new TestDataMethodCases();
     final Class<? extends TestDataMethodCases> c = mc.getClass();
@@ -49,10 +52,8 @@ public class TestClassesTest
     Assert.assertFalse(TestScanning.isTestMethod(m));
   }
 
-  @SuppressWarnings("static-method") @Test public
-    void
-    testIsTestMethodPublicNotStatic()
-      throws NoSuchMethodException
+  @Test public void testIsTestMethodPublicNotStatic()
+    throws NoSuchMethodException
   {
     final TestDataMethodCases mc = new TestDataMethodCases();
     final Class<? extends TestDataMethodCases> c = mc.getClass();
@@ -60,10 +61,8 @@ public class TestClassesTest
     Assert.assertFalse(TestScanning.isTestMethod(m));
   }
 
-  @SuppressWarnings("static-method") @Test public
-    void
-    testIsTestMethodPublicAndStatic()
-      throws NoSuchMethodException
+  @Test public void testIsTestMethodPublicAndStatic()
+    throws NoSuchMethodException
   {
     final TestDataMethodCases mc = new TestDataMethodCases();
     final Class<? extends TestDataMethodCases> c = mc.getClass();
@@ -71,10 +70,8 @@ public class TestClassesTest
     Assert.assertFalse(TestScanning.isTestMethod(m));
   }
 
-  @SuppressWarnings("static-method") @Test public
-    void
-    testIsTestMethodActual()
-      throws NoSuchMethodException
+  @Test public void testIsTestMethodActual()
+    throws NoSuchMethodException
   {
     final TestDataMethodCases mc = new TestDataMethodCases();
     final Class<? extends TestDataMethodCases> c = mc.getClass();
@@ -82,9 +79,7 @@ public class TestClassesTest
     Assert.assertTrue(TestScanning.isTestMethod(m));
   }
 
-  @SuppressWarnings("static-method") @Test public
-    void
-    testIsRunnableAbstract()
+  @Test public void testIsRunnableAbstract()
   {
     @SuppressWarnings("unused") final TestDataUnrunnableClassAbstract uca =
       new TestDataUnrunnableClassAbstract() {
@@ -95,29 +90,27 @@ public class TestClassesTest
       .isRunnableTestClass(TestDataUnrunnableClassAbstract.class));
   }
 
-  @SuppressWarnings("static-method") @Test public
-    void
-    testIsRunnableNoMethods()
+  @Test public void testIsRunnableNoMethods()
   {
-    final TestDataUnrunnableClassNoMethods unm = new TestDataUnrunnableClassNoMethods();
+    final TestDataUnrunnableClassNoMethods unm =
+      new TestDataUnrunnableClassNoMethods();
     Assert.assertFalse(TestScanning.isRunnableTestClass(unm.getClass()));
   }
 
-  @SuppressWarnings("static-method") @Test public
-    void
-    testIsRunnableNotPublic()
+  @Test public void testIsRunnableNotPublic()
   {
-    final TestDataUnrunnableClassNotPublic unp = new TestDataUnrunnableClassNotPublic();
-    Assert.assertFalse(TestScanning.isRunnableTestClass(unp.getClass()));
+    final TestDataUnrunnableClassNotPublic unm =
+      new TestDataUnrunnableClassNotPublic();
+    Assert.assertFalse(TestScanning.isRunnableTestClass(unm.getClass()));
   }
 
-  @SuppressWarnings("static-method") @Test public void testIsRunnable()
+  @Test public void testIsRunnable()
   {
     final TestDataRunnableClass rc = new TestDataRunnableClass();
     Assert.assertTrue(TestScanning.isRunnableTestClass(rc.getClass()));
   }
 
-  @Ignore("Fails when executed from Maven, for unknown reasons") @SuppressWarnings("static-method") @Test public
+  @Ignore("Fails when executed from Maven, for unknown reasons") @Test public
     void
     testGetClasses()
   {
@@ -133,9 +126,10 @@ public class TestClassesTest
     Assert.assertTrue(cs.contains(TestDataAllFail.class));
   }
 
-  @SuppressWarnings("static-method") @Test public void testGetMethods()
+  @Test public void testGetMethods()
   {
-    final Set<Method> ms = TestScanning.getRunnableTestMethods(TestDataAllPass.class);
+    final Set<Method> ms =
+      TestScanning.getRunnableTestMethods(TestDataAllPass.class);
     Assert.assertTrue(ms.size() == 3);
   }
 }

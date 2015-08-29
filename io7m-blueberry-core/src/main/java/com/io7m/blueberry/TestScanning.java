@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 <code@io7m.com> http://io7m.com
+ * Copyright © 2014 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -22,13 +22,13 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
+
+import com.io7m.junreachable.UnreachableCodeException;
 
 /**
  * Functions for scanning for tests, and inspecting classes and methods.
@@ -36,17 +36,25 @@ import org.reflections.util.FilterBuilder;
 
 public final class TestScanning
 {
+  private TestScanning()
+  {
+    throw new UnreachableCodeException();
+  }
+
   /**
-   * Return the set of all classes on the classpath that are in packages
-   * prefixed by <code>prefix</code> and are runnable according to
-   * {@link #isRunnableTestClass(Class)}.
+   * @return The set of all classes on the classpath that are in packages
+   *         prefixed by <code>prefix</code> and are runnable according to
+   *         {@link #isRunnableTestClass(Class)}.
    * 
-   * That is, a prefix of <code>x.y</code> will find classes
-   * <code>x.y.z.A</code>, <code>x.y.q.B</code>, and so on.
+   *         That is, a prefix of <code>x.y</code> will find classes
+   *         <code>x.y.z.A</code>, <code>x.y.q.B</code>, and so on.
+   * 
+   * @param prefix
+   *          The package prefix.
    */
 
   public static Set<Class<?>> getPackageClasses(
-    final @Nonnull String prefix)
+    final String prefix)
   {
     final ConfigurationBuilder cb = new ConfigurationBuilder();
     cb.setScanners(new SubTypesScanner(false));
@@ -60,6 +68,8 @@ public final class TestScanning
       new HashSet<Class<? extends Object>>();
 
     for (final Class<? extends Object> c : ts) {
+      assert c != null;
+
       if (TestScanning.isRunnableTestClass(c)) {
         selected.add(c);
       }
@@ -69,16 +79,20 @@ public final class TestScanning
   }
 
   /**
-   * Return the set of all runnable test methods, according to
-   * {@link #isTestMethod(Method)}.
+   * @return The set of all runnable test methods, according to
+   *         {@link #isTestMethod(Method)}.
+   * @param c
+   *          The class.
    */
 
   public static Set<Method> getRunnableTestMethods(
-    final @Nonnull Class<?> c)
+    final Class<?> c)
   {
     final Set<Method> methods = new HashSet<Method>();
     final Method[] all = c.getMethods();
     for (final Method m : all) {
+      assert m != null;
+
       if (TestScanning.isTestMethod(m)) {
         methods.add(m);
       }
@@ -87,8 +101,11 @@ public final class TestScanning
   }
 
   /**
-   * Return <code>true</code> iff the given class is <code>public</code>, not
-   * <code>abstract</code>, and has at least one test method.
+   * @return <code>true</code> iff the given class is <code>public</code>, not
+   *         <code>abstract</code>, and has at least one test method.
+   * 
+   * @param c
+   *          The class.
    * 
    * @see #isTestMethod(Method)
    */
@@ -106,6 +123,8 @@ public final class TestScanning
 
     final Method[] methods = c.getMethods();
     for (final Method m : methods) {
+      assert m != null;
+
       if (TestScanning.isTestMethod(m)) {
         return true;
       }
@@ -115,12 +134,15 @@ public final class TestScanning
   }
 
   /**
-   * Return <code>true</code> iff the given method is not <code>static</code>
-   * and is annotated with {@link org.junit.Test}.
+   * @return <code>true</code> iff the given method is not <code>static</code>
+   *         and is annotated with {@link org.junit.Test}.
+   * 
+   * @param m
+   *          The method.
    */
 
   public static boolean isTestMethod(
-    final @Nonnull Method m)
+    final Method m)
   {
     if ((m.getModifiers() & Modifier.STATIC) == Modifier.STATIC) {
       return false;

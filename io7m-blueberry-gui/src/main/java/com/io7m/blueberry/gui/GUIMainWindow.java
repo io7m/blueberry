@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 <code@io7m.com> http://io7m.com
+ * Copyright © 2014 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -19,7 +19,6 @@ package com.io7m.blueberry.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
-import javax.annotation.Nonnull;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
@@ -31,21 +30,21 @@ import com.io7m.blueberry.TestReportConfig;
 
 final class GUIMainWindow extends JFrame
 {
-  private final @Nonnull JTabbedPane   tabs;
-  private final @Nonnull GUITestsPanel tests_tab;
-  private final @Nonnull GUIStatusBar  status_bar;
-  private final @Nonnull GUIInfoPanel  info_tab;
-  private final @Nonnull GUILogPanel   log_tab;
-  private final @Nonnull GUILogger     logger;
-  private static final long            serialVersionUID;
+  private final JTabbedPane   tabs;
+  private final GUITestsPanel tests_tab;
+  private final GUIStatusBar  status_bar;
+  private final GUIInfoPanel  info_tab;
+  private final GUILogPanel   log_tab;
+  private final GUILogger     logger;
+  private static final long   serialVersionUID;
 
   static {
     serialVersionUID = 2766673586988551555L;
   }
 
   GUIMainWindow(
-    final @Nonnull GUIProjectInfo info,
-    final @Nonnull TestReportConfig xml_config)
+    final GUIProjectInfo info,
+    final TestReportConfig xml_config)
   {
     final StringBuilder title_buffer = new StringBuilder();
     title_buffer.append(info.toString());

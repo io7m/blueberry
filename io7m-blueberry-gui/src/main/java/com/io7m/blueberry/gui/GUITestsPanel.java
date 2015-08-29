@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 <code@io7m.com> http://io7m.com
+ * Copyright © 2014 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -43,7 +43,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.GZIPOutputStream;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
@@ -68,29 +67,31 @@ import com.io7m.blueberry.TestScanning;
 import com.io7m.blueberry.TestState;
 import com.io7m.blueberry.TestState.Failed;
 import com.io7m.blueberry.TestState.Succeeded;
-import com.io7m.blueberry.TestStateListener;
+import com.io7m.blueberry.TestStateListenerType;
+import com.io7m.jnull.Nullable;
 
 /**
  * The main testing panel.
  */
 
-final class GUITestsPanel extends JPanel
+@SuppressWarnings({ "synthetic-access", "null", "unused" }) final class GUITestsPanel extends
+  JPanel
 {
   private static final long serialVersionUID = 576981915184121927L;
 
   static class ClassTestPair implements Comparable<ClassTestPair>
   {
-    public final @Nonnull ClassName class_name;
-    public final @Nonnull TestName  test_name;
+    private final ClassName class_name;
+    private final TestName  test_name;
 
     ClassTestPair(
-      final @Nonnull ClassName class_name,
-      final @Nonnull TestName test_name)
+      final ClassName in_class_name,
+      final TestName in_test_name)
     {
-      assert class_name != null;
-      assert test_name != null;
-      this.class_name = class_name;
-      this.test_name = test_name;
+      assert in_class_name != null;
+      assert in_test_name != null;
+      this.class_name = in_class_name;
+      this.test_name = in_test_name;
     }
 
     @Override public int hashCode()
@@ -103,7 +104,7 @@ final class GUITestsPanel extends JPanel
     }
 
     @Override public boolean equals(
-      final Object obj)
+      final @Nullable Object obj)
     {
       if (this == obj) {
         return true;
@@ -125,11 +126,12 @@ final class GUITestsPanel extends JPanel
     }
 
     @Override public int compareTo(
-      final @Nonnull ClassTestPair o)
+      final ClassTestPair o)
     {
-      final int cnc = this.class_name.actual.compareTo(o.class_name.actual);
+      final int cnc =
+        this.class_name.getActual().compareTo(o.class_name.getActual());
       if (cnc == 0) {
-        return this.test_name.actual.compareTo(o.test_name.actual);
+        return this.test_name.getActual().compareTo(o.test_name.getActual());
       }
       return cnc;
     }
@@ -137,15 +139,19 @@ final class GUITestsPanel extends JPanel
 
   static class TestsTableModel extends AbstractTableModel
   {
-    private final @Nonnull SortedMap<ClassTestPair, TestState> data_map;
-    private static final long                                  serialVersionUID;
-    private static final @Nonnull String[]                     column_names;
-    private final @Nonnull NumberFormat                        formatter;
+    private final SortedMap<ClassTestPair, TestState> data_map;
+    private static final long                         serialVersionUID;
+    private static final String[]                     COLUMN_NAMES;
+    private final NumberFormat                        formatter;
 
     static {
       serialVersionUID = -912792027128516356L;
-      column_names =
-        new String[] { "Class", "Test", "State", "Elapsed (ms)" };
+
+      COLUMN_NAMES = new String[4];
+      TestsTableModel.COLUMN_NAMES[0] = "Class";
+      TestsTableModel.COLUMN_NAMES[1] = "Test";
+      TestsTableModel.COLUMN_NAMES[2] = "State";
+      TestsTableModel.COLUMN_NAMES[3] = "Elapsed (ms)";
     }
 
     TestsTableModel()
@@ -159,7 +165,7 @@ final class GUITestsPanel extends JPanel
     @Override public String getColumnName(
       final int column)
     {
-      return TestsTableModel.column_names[column];
+      return TestsTableModel.COLUMN_NAMES[column];
     }
 
     @Override public int getRowCount()
@@ -169,10 +175,10 @@ final class GUITestsPanel extends JPanel
 
     @Override public int getColumnCount()
     {
-      return TestsTableModel.column_names.length;
+      return TestsTableModel.COLUMN_NAMES.length;
     }
 
-    @Nonnull ClassTestPair getClassTestPairAt(
+    ClassTestPair getClassTestPairAt(
       final int row)
     {
       if (row < this.data_map.size()) {
@@ -199,14 +205,14 @@ final class GUITestsPanel extends JPanel
     }
 
     private String getValue(
-      final int columnIndex,
+      final int column_index,
       final ClassTestPair x)
     {
-      switch (columnIndex) {
+      switch (column_index) {
         case 0:
-          return x.class_name.actual;
+          return x.class_name.getActual();
         case 1:
-          return x.test_name.actual;
+          return x.test_name.getActual();
         case 2:
           return this.data_map.get(x).getType().toHumanString();
         case 3:
@@ -216,8 +222,8 @@ final class GUITestsPanel extends JPanel
       throw new AssertionError("Unreachable code");
     }
 
-    private @Nonnull String getElapsed(
-      final @Nonnull TestState state)
+    private String getElapsed(
+      final TestState state)
     {
       switch (state.getType()) {
         case STATE_FAILED:
@@ -246,7 +252,7 @@ final class GUITestsPanel extends JPanel
     }
 
     @CheckForNull TestState lookup(
-      final @Nonnull ClassTestPair cp)
+      final ClassTestPair cp)
     {
       return this.data_map.get(cp);
     }
@@ -264,35 +270,34 @@ final class GUITestsPanel extends JPanel
 
   static class TestsTable extends JTable
   {
-    private static final long              serialVersionUID =
-                                                              432410053774535219L;
-    private final @Nonnull TestsTableModel data;
+    private static final long     serialVersionUID = 432410053774535219L;
+    private final TestsTableModel data;
 
     TestsTable(
-      final @Nonnull TestsTableModel data)
+      final TestsTableModel in_data)
     {
-      super(data);
-      this.data = data;
+      super(in_data);
+      this.data = in_data;
       this.getColumnModel().getColumn(0).setPreferredWidth(300);
       this.getColumnModel().getColumn(1).setPreferredWidth(100);
       this.getColumnModel().getColumn(2).setPreferredWidth(32);
       this.getColumnModel().getColumn(3).setPreferredWidth(32);
     }
 
-    private static final @Nonnull Color color_failed;
-    private static final @Nonnull Color color_skipped;
-    private static final @Nonnull Color color_initialized;
-    private static final @Nonnull Color color_succeeded;
+    private static final Color COLOR_FAILED;
+    private static final Color COLOR_SKIPPED;
+    private static final Color COLOR_INITIALIZED;
+    private static final Color COLOR_SUCCEEDED;
 
     static {
-      color_failed = new Color(1.0f, 0.8f, 0.8f);
-      color_skipped = new Color(1.0f, 1.0f, 0.8f);
-      color_initialized = new Color(1.0f, 1.0f, 1.0f);
-      color_succeeded = new Color(0.8f, 1.0f, 0.8f);
+      COLOR_FAILED = new Color(1.0f, 0.8f, 0.8f);
+      COLOR_SKIPPED = new Color(1.0f, 1.0f, 0.8f);
+      COLOR_INITIALIZED = new Color(1.0f, 1.0f, 1.0f);
+      COLOR_SUCCEEDED = new Color(0.8f, 1.0f, 0.8f);
     }
 
-    @Override public @Nonnull Component prepareRenderer(
-      final @Nonnull TableCellRenderer renderer,
+    @Override public Component prepareRenderer(
+      final @Nullable TableCellRenderer renderer,
       final int row,
       final int column)
     {
@@ -303,22 +308,22 @@ final class GUITestsPanel extends JPanel
       switch (state.getType()) {
         case STATE_FAILED:
         {
-          c.setBackground(TestsTable.color_failed);
+          c.setBackground(TestsTable.COLOR_FAILED);
           break;
         }
         case STATE_INITIALIZED:
         {
-          c.setBackground(TestsTable.color_initialized);
+          c.setBackground(TestsTable.COLOR_INITIALIZED);
           break;
         }
         case STATE_SKIPPED:
         {
-          c.setBackground(TestsTable.color_skipped);
+          c.setBackground(TestsTable.COLOR_SKIPPED);
           break;
         }
         case STATE_SUCCEEDED:
         {
-          c.setBackground(TestsTable.color_succeeded);
+          c.setBackground(TestsTable.COLOR_SUCCEEDED);
           break;
         }
       }
@@ -327,48 +332,47 @@ final class GUITestsPanel extends JPanel
     }
   }
 
-  private final @Nonnull TestsTableModel                       table_data;
-  private final @Nonnull TestsTable                            table;
-  private final @Nonnull JScrollPane                           table_pane;
-  private final @Nonnull ButtonRun                             button_run;
-  private final @Nonnull ButtonSaveReport                      button_save;
-  private final @Nonnull GUIProjectInfo                        info;
-  private final @Nonnull Executor                              executor;
-  private final @Nonnull AtomicReference<TestCollectionRunner> runner;
-  private final @Nonnull RunnerListener                        listener;
-  private final @Nonnull TestReportConfig                      xml_config;
-  private final @Nonnull GUILogger                             logger;
+  private final TestsTableModel                       table_data;
+  private final TestsTable                            table;
+  private final JScrollPane                           table_pane;
+  private final ButtonRun                             button_run;
+  private final ButtonSaveReport                      button_save;
+  private final GUIProjectInfo                        info;
+  private final Executor                              executor;
+  private final AtomicReference<TestCollectionRunner> runner;
+  private final RunnerListener                        listener;
+  private final TestReportConfig                      xml_config;
+  private final GUILogger                             logger;
 
-  private static class RunnerListener implements TestStateListener
+  private static class RunnerListener implements TestStateListenerType
   {
-    private final @Nonnull TestsTableModel  table_data;
-    private final @Nonnull GUILogger        logger;
-    private long                            test_total      = 0;
-    private final @Nonnull ButtonRun        button_run;
-    private final @Nonnull ButtonSaveReport button_save;
-
-    private long                            tests_run       = 0;
-    private long                            tests_succeeded = 0;
-    private long                            tests_skipped   = 0;
-    private long                            tests_failed    = 0;
+    private final TestsTableModel  table_data;
+    private final GUILogger        logger;
+    private long                   test_total;
+    private final ButtonRun        button_run;
+    private final ButtonSaveReport button_save;
+    private long                   tests_run;
+    private long                   tests_succeeded;
+    private long                   tests_skipped;
+    private long                   tests_failed;
 
     public RunnerListener(
-      final @Nonnull TestsTableModel table_data,
-      final @Nonnull GUILogger logger,
-      final @Nonnull ButtonRun button_run,
-      final @Nonnull ButtonSaveReport button_save)
+      final TestsTableModel in_table_data,
+      final GUILogger in_logger,
+      final ButtonRun in_button_run,
+      final ButtonSaveReport in_button_save)
     {
-      this.table_data = table_data;
-      this.logger = logger;
-      this.button_run = button_run;
-      this.button_save = button_save;
+      this.table_data = in_table_data;
+      this.logger = in_logger;
+      this.button_run = in_button_run;
+      this.button_save = in_button_save;
     }
 
     @Override public void testStateRunStarted(
       final long count)
     {
       SwingUtilities.invokeLater(new Runnable() {
-        @SuppressWarnings("synthetic-access") @Override public void run()
+        @Override public void run()
         {
           RunnerListener.this.test_total = count;
           RunnerListener.this.logger.write("Running tests...");
@@ -382,7 +386,7 @@ final class GUITestsPanel extends JPanel
       final TestState state)
     {
       SwingUtilities.invokeLater(new Runnable() {
-        @SuppressWarnings("synthetic-access") @Override public void run()
+        @Override public void run()
         {
           RunnerListener.this.table_data
             .testStateSet(class_name, test, state);
@@ -396,7 +400,7 @@ final class GUITestsPanel extends JPanel
       final TestState state)
     {
       SwingUtilities.invokeLater(new Runnable() {
-        @SuppressWarnings("synthetic-access") @Override public void run()
+        @Override public void run()
         {
           switch (state.getType()) {
             case STATE_INITIALIZED:
@@ -424,7 +428,7 @@ final class GUITestsPanel extends JPanel
     @Override public void testStateRunFinished()
     {
       SwingUtilities.invokeLater(new Runnable() {
-        @SuppressWarnings("synthetic-access") @Override public void run()
+        @Override public void run()
         {
           final StringBuilder b = new StringBuilder();
           b.append("Test run completed ");
@@ -450,20 +454,21 @@ final class GUITestsPanel extends JPanel
       final long n)
     {
       SwingUtilities.invokeLater(new Runnable() {
-        @SuppressWarnings("synthetic-access") @Override public void run()
+        @Override public void run()
         {
           final StringBuilder buffer = new StringBuilder();
           buffer.append("Running test ");
-          buffer.append(class_name.actual);
+          buffer.append(class_name.getActual());
           buffer.append(".");
-          buffer.append(test.actual);
+          buffer.append(test.getActual());
           buffer.append(" (");
           buffer.append(n);
           buffer.append(" of ");
           buffer.append(RunnerListener.this.test_total);
           buffer.append(")");
-
-          RunnerListener.this.logger.write(buffer.toString());
+          final String r = buffer.toString();
+          assert r != null;
+          RunnerListener.this.logger.write(r);
         }
       });
     }
@@ -476,26 +481,25 @@ final class GUITestsPanel extends JPanel
 
   private static class RunnerInitializationTask implements Runnable
   {
-    private long                                                 load_time =
-                                                                             0;
-    private final @Nonnull GUIProjectInfo                        info;
-    private final @Nonnull GUILogger                             logger;
-    private final @Nonnull AtomicReference<TestCollectionRunner> runner;
-    private final @Nonnull RunnerListener                        listener;
-    private final @Nonnull JButton                               button;
+    private long                                        load_time;
+    private final GUIProjectInfo                        info;
+    private final GUILogger                             logger;
+    private final AtomicReference<TestCollectionRunner> runner;
+    private final RunnerListener                        listener;
+    private final JButton                               button;
 
     public RunnerInitializationTask(
-      final @Nonnull GUIProjectInfo info,
-      final @Nonnull GUILogger logger,
-      final @Nonnull AtomicReference<TestCollectionRunner> runner,
-      final @Nonnull RunnerListener listener,
-      final @Nonnull JButton button)
+      final GUIProjectInfo in_info,
+      final GUILogger in_logger,
+      final AtomicReference<TestCollectionRunner> in_runner,
+      final RunnerListener in_listener,
+      final JButton in_button)
     {
-      this.info = info;
-      this.logger = logger;
-      this.runner = runner;
-      this.listener = listener;
-      this.button = button;
+      this.info = in_info;
+      this.logger = in_logger;
+      this.runner = in_runner;
+      this.listener = in_listener;
+      this.button = in_button;
     }
 
     private Set<Class<?>> getClasses()
@@ -509,7 +513,7 @@ final class GUITestsPanel extends JPanel
           classes.addAll(cs);
         } catch (final Throwable e) {
           SwingUtilities.invokeLater(new Runnable() {
-            @SuppressWarnings("synthetic-access") @Override public void run()
+            @Override public void run()
             {
               final StringBuilderOutputStream stream =
                 new StringBuilderOutputStream();
@@ -539,7 +543,7 @@ final class GUITestsPanel extends JPanel
       return classes;
     }
 
-    @SuppressWarnings("synthetic-access") @Override public void run()
+    @Override public void run()
     {
       /**
        * Load classes.
@@ -591,14 +595,14 @@ final class GUITestsPanel extends JPanel
     private static final long serialVersionUID = -4090482958181194934L;
 
     ButtonRun(
-      final @Nonnull Executor executor,
-      final @Nonnull AtomicReference<TestCollectionRunner> runner)
+      final Executor executor,
+      final AtomicReference<TestCollectionRunner> runner)
     {
       this.setText("Run");
       this.setToolTipText("Run all tests");
       this.addActionListener(new ActionListener() {
         @Override public void actionPerformed(
-          final ActionEvent e)
+          final @Nullable ActionEvent e)
         {
           final TestCollectionRunner r = runner.get();
           if (r != null) {
@@ -612,18 +616,18 @@ final class GUITestsPanel extends JPanel
 
   static class XMLSaveTask implements Runnable
   {
-    private final @Nonnull GUILogger logger;
-    private final @Nonnull File      file;
-    private final @Nonnull Element   xml_data;
+    private final GUILogger logger;
+    private final File      file;
+    private final Element   xml_data;
 
     XMLSaveTask(
-      final @Nonnull GUILogger logger,
-      final @Nonnull File file,
-      final @Nonnull Element xml_data)
+      final GUILogger in_logger,
+      final File in_file,
+      final Element in_xml_data)
     {
-      this.logger = logger;
-      this.file = file;
-      this.xml_data = xml_data;
+      this.logger = in_logger;
+      this.file = in_file;
+      this.xml_data = in_xml_data;
     }
 
     @Override public void run()
@@ -642,7 +646,7 @@ final class GUITestsPanel extends JPanel
         this.logger.write("Report saved to " + this.file);
       } catch (final FileNotFoundException e) {
         SwingUtilities.invokeLater(new Runnable() {
-          @SuppressWarnings("synthetic-access") @Override public void run()
+          @Override public void run()
           {
             XMLSaveTask.this.logger.write("Error saving report: "
               + e.getMessage());
@@ -650,7 +654,7 @@ final class GUITestsPanel extends JPanel
         });
       } catch (final UnsupportedEncodingException e) {
         SwingUtilities.invokeLater(new Runnable() {
-          @SuppressWarnings("synthetic-access") @Override public void run()
+          @Override public void run()
           {
             XMLSaveTask.this.logger.write("Error saving report: "
               + e.getMessage());
@@ -658,7 +662,7 @@ final class GUITestsPanel extends JPanel
         });
       } catch (final IOException e) {
         SwingUtilities.invokeLater(new Runnable() {
-          @SuppressWarnings("synthetic-access") @Override public void run()
+          @Override public void run()
           {
             XMLSaveTask.this.logger.write("Error saving report: "
               + e.getMessage());
@@ -673,17 +677,17 @@ final class GUITestsPanel extends JPanel
     private static final long serialVersionUID = 2332514499389125540L;
 
     ButtonSaveReport(
-      final @Nonnull GUILogger logger,
-      final @Nonnull TestReportConfig xml_config,
-      final @Nonnull Executor executor,
-      final @Nonnull AtomicReference<TestCollectionRunner> runner)
+      final GUILogger logger,
+      final TestReportConfig xml_config,
+      final Executor executor,
+      final AtomicReference<TestCollectionRunner> runner)
     {
       this.setText("Save report...");
       this
         .setToolTipText("Save a gzip-compressed XML report of the test results");
       this.addActionListener(new ActionListener() {
         @Override public void actionPerformed(
-          final ActionEvent e)
+          final @Nullable ActionEvent e)
         {
           final TestCollectionRunner r = runner.get();
           if (r != null) {
@@ -730,15 +734,15 @@ final class GUITestsPanel extends JPanel
   }
 
   GUITestsPanel(
-    final @Nonnull GUIProjectInfo info,
-    final @Nonnull TestReportConfig xml_config,
-    final @Nonnull GUILogger logger)
+    final GUIProjectInfo in_info,
+    final TestReportConfig in_xml_config,
+    final GUILogger in_logger)
   {
-    this.info = info;
-    this.logger = logger;
+    this.info = in_info;
+    this.logger = in_logger;
     this.executor = Executors.newCachedThreadPool();
     this.runner = new AtomicReference<TestCollectionRunner>();
-    this.xml_config = xml_config;
+    this.xml_config = in_xml_config;
 
     /**
      * Initialize table.
@@ -774,12 +778,12 @@ final class GUITestsPanel extends JPanel
     this.listener =
       new RunnerListener(
         this.table_data,
-        logger,
+        in_logger,
         this.button_run,
         this.button_save);
 
     this.executor.execute(new RunnerInitializationTask(
-      info,
+      in_info,
       this.logger,
       this.runner,
       this.listener,

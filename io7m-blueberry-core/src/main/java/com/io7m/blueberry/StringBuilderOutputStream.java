@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 <code@io7m.com> http://io7m.com
+ * Copyright © 2014 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -29,6 +29,10 @@ public final class StringBuilderOutputStream extends OutputStream
 {
   private final @Nonnull StringBuilder buffer;
 
+  /**
+   * Construct a new output stream.
+   */
+
   public StringBuilderOutputStream()
   {
     this.buffer = new StringBuilder();
@@ -42,7 +46,7 @@ public final class StringBuilderOutputStream extends OutputStream
   }
 
   /**
-   * Retrieve the internal {@link StringBuilder}.
+   * @return The internal {@link StringBuilder}.
    */
 
   public @Nonnull StringBuilder getBuffer()

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 <code@io7m.com> http://io7m.com
+ * Copyright © 2014 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,7 @@
 
 package com.io7m.blueberry.gui;
 
-import javax.annotation.CheckForNull;
+import com.io7m.jnull.Nullable;
 
 /**
  * A project version number.
@@ -24,39 +24,68 @@ import javax.annotation.CheckForNull;
 
 public final class GUIProjectVersion
 {
-  private final int                  major;
-  private final int                  minor;
-  private final int                  patch;
-  private final @CheckForNull String qualifier;
+  private final int              major;
+  private final int              minor;
+  private final int              patch;
+  private final @Nullable String qualifier;
+
+  /**
+   * Construct a project version.
+   * 
+   * @param in_major
+   *          The major version.
+   * @param in_minor
+   *          The minor version.
+   * @param in_patch
+   *          The patch version.
+   * @param in_qualifier
+   *          The qualifier.
+   */
 
   public GUIProjectVersion(
-    final int major,
-    final int minor,
-    final int patch,
-    final @CheckForNull String qualifier)
+    final int in_major,
+    final int in_minor,
+    final int in_patch,
+    final @Nullable String in_qualifier)
   {
-    this.major = major;
-    this.minor = minor;
-    this.patch = patch;
-    this.qualifier = qualifier;
+    this.major = in_major;
+    this.minor = in_minor;
+    this.patch = in_patch;
+    this.qualifier = in_qualifier;
   }
+
+  /**
+   * @return The major version.
+   */
 
   public int getMajor()
   {
     return this.major;
   }
 
+  /**
+   * @return The minor version.
+   */
+
   public int getMinor()
   {
     return this.minor;
   }
+
+  /**
+   * @return The patch version.
+   */
 
   public int getPatch()
   {
     return this.patch;
   }
 
-  public @CheckForNull String getQualifier()
+  /**
+   * @return The qualifier, if any.
+   */
+
+  public @Nullable String getQualifier()
   {
     return this.qualifier;
   }
@@ -68,14 +97,16 @@ public final class GUIProjectVersion
     result = (prime * result) + this.major;
     result = (prime * result) + this.minor;
     result = (prime * result) + this.patch;
-    result =
-      (prime * result)
-        + ((this.qualifier == null) ? 0 : this.qualifier.hashCode());
+
+    final String q = this.qualifier;
+    if (q != null) {
+      result = (prime * result) + q.hashCode();
+    }
     return result;
   }
 
   @Override public boolean equals(
-    final Object obj)
+    final @Nullable Object obj)
   {
     if (this == obj) {
       return true;
@@ -96,14 +127,13 @@ public final class GUIProjectVersion
     if (this.patch != other.patch) {
       return false;
     }
-    if (this.qualifier == null) {
-      if (other.qualifier != null) {
-        return false;
-      }
-    } else if (!this.qualifier.equals(other.qualifier)) {
-      return false;
+
+    final String q = this.qualifier;
+    if (q != null) {
+      return q.equals(other.qualifier);
     }
-    return true;
+
+    return other.qualifier == null;
   }
 
   @Override public String toString()
@@ -118,6 +148,8 @@ public final class GUIProjectVersion
       builder.append("-");
       builder.append(this.qualifier);
     }
-    return builder.toString();
+    final String r = builder.toString();
+    assert r != null;
+    return r;
   }
 }

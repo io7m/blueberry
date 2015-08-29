@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 <code@io7m.com> http://io7m.com
+ * Copyright © 2014 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -24,11 +24,11 @@ final class GUILogger
   private final @Nonnull GUILogPanel  log;
 
   GUILogger(
-    final @Nonnull GUIStatusBar status,
-    final @Nonnull GUILogPanel log)
+    final @Nonnull GUIStatusBar in_status,
+    final @Nonnull GUILogPanel in_log)
   {
-    this.status = status;
-    this.log = log;
+    this.status = in_status;
+    this.log = in_log;
   }
 
   void write(

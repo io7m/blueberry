@@ -1,5 +1,5 @@
 /*
- * Copyright © 2013 <code@io7m.com> http://io7m.com
+ * Copyright © 2014 <code@io7m.com> http://io7m.com
  * 
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,8 @@
 
 package com.io7m.blueberry;
 
-import javax.annotation.Nonnull;
+import com.io7m.jnull.NullCheck;
+import com.io7m.jnull.Nullable;
 
 /**
  * A test (method) name.
@@ -24,13 +25,21 @@ import javax.annotation.Nonnull;
 
 public final class TestName
 {
-  public final @Nonnull String actual;
+  private final String actual;
+
+  /**
+   * @return The actual name.
+   */
+
+  public String getActual()
+  {
+    return this.actual;
+  }
 
   TestName(
-    final @Nonnull String actual)
+    final String in_actual)
   {
-    assert actual != null;
-    this.actual = actual;
+    this.actual = NullCheck.notNull(in_actual, "Name");
   }
 
   @Override public int hashCode()
@@ -39,7 +48,7 @@ public final class TestName
   }
 
   @Override public boolean equals(
-    final Object obj)
+    final @Nullable Object obj)
   {
     if (this == obj) {
       return true;
@@ -63,6 +72,8 @@ public final class TestName
     builder.append("[TestName ");
     builder.append(this.actual);
     builder.append("]");
-    return builder.toString();
+    final String r = builder.toString();
+    assert r != null;
+    return r;
   }
 }
