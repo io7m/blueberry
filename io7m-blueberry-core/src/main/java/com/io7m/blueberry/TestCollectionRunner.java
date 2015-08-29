@@ -1,10 +1,10 @@
 /*
  * Copyright © 2014 <code@io7m.com> http://io7m.com
- * 
+ *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
  * copyright notice and this permission notice appear in all copies.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
  * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
@@ -38,7 +38,7 @@ import com.io7m.jnull.Nullable;
 /**
  * A test runner that runs all tests in the given classes, and publishes test
  * state changes on the given listener.
- * 
+ *
  * @see TestStateListenerType
  */
 
@@ -51,7 +51,7 @@ import com.io7m.jnull.Nullable;
 
   /**
    * Construct a test collection runner.
-   * 
+   *
    * @param in_listener
    *          The listener.
    * @param in_classes
@@ -75,12 +75,12 @@ import com.io7m.jnull.Nullable;
    * Execute all tests in the set of classes given to the constructor.
    * </p>
    * <p>
-   * Note that this class implements {@link java.util.concurrent.Runnable},
+   * Note that this class implements {@link java.lang.Runnable},
    * and the intention is that this method will be called from an
    * {@link java.util.concurrent.Executor} in order to run all unit tests on a
    * separate thread.
    * </p>
-   * 
+   *
    * @see #TestCollectionRunner(TestStateListenerType, Set)
    */
 
