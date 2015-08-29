@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright © 2012 http://io7m.com
+
+  Permission to use, copy, modify, and/or distribute this software for any
+  purpose with or without fee is hereby granted, provided that the above
+  copyright notice and this permission notice appear in all copies.
+
+  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  -->
+
+<s:document
+  xmlns:s="http://schemas.io7m.com/structural/2.1.0"
+  xmlns:xi="http://www.w3.org/2001/XInclude">
+  <s:document-title>io7m-blueberry 0.3.1 Documentation</s:document-title>
+  <s:document-style>documentation.css</s:document-style>
+  <s:document-contents/>
+
+  <s:part>
+    <s:part-title>Package Information</s:part-title>
+    <s:part-contents />
+    <s:section>
+      <s:section-title>Orientation</s:section-title>
+      <s:subsection>
+        <s:subsection-title>Overview</s:subsection-title>
+        <s:paragraph>
+          Well-written software typically has hundreds or thousands of
+          automated tests. The tests are run as part of the build process
+          and any failure indicates broken software. Developers typically
+          assume that a program that passes all of its own tests is working
+          correctly. Unfortunately, when the program is executed by end-users,
+          differences in the environment in which the program runs often
+          uncover new problems <s:footnote>Developers working with OpenGL
+          will be painfully familiar with this problem</s:footnote>.
+        </s:paragraph>
+        <s:paragraph>
+          Ideally, developers would like every end-user to be able to
+          exhaustively test programs on their own systems. Unfortunately,
+          this would require the end-users to have access to the program's
+          source code and would also require them to install development
+          tools. The latter is out of the question for most end-users (if
+          development tools are even available on their platform), and the
+          former is out of the question for many developers.
+        </s:paragraph>
+        <s:paragraph>
+          The <s:term s:type="package">blueberry</s:term> package attempts to
+          solve this problem by implementing a system that allows 
+          non-technical users to participate in unit testing without having
+          access to source code and without having to install any development
+          tools.
+        </s:paragraph>
+      </s:subsection>
+    </s:section>
+
+    <s:section>
+      <s:section-title>Installation</s:section-title>
+      <s:subsection>
+        <s:subsection-title>Source compilation</s:subsection-title>
+        <s:paragraph>
+          The project can be compiled and installed with
+          <s:link-external s:target="http://maven.apache.org">Maven</s:link-external>:
+        </s:paragraph>
+        <s:paragraph>
+          <s:verbatim s:type="example"><![CDATA[$ mvn -C clean install]]></s:verbatim>
+        </s:paragraph>
+      </s:subsection>
+      <s:subsection>
+        <s:subsection-title>Maven</s:subsection-title>
+        <s:paragraph>
+          Regular releases are made to the
+          <s:link-external s:target="http://search.maven.org/#search%7Cga%7C1%7Cio7m-blueberry">Central Repository</s:link-external>,
+          so it's possible to use the <s:term s:type="package">blueberry</s:term>
+          package in your projects with the following Maven dependencies:
+        </s:paragraph>
+        <s:paragraph>
+          <s:verbatim s:type="example"><![CDATA[<dependency>
+  <groupId>com.io7m.blueberry</groupId>
+  <artifactId>io7m-blueberry-core</artifactId>
+  <version>0.3.1</version>
+</dependency>
+<dependency>
+  <groupId>com.io7m.blueberry</groupId>
+  <artifactId>io7m-blueberry-gui</artifactId>
+  <version>0.3.1</version>
+</dependency>]]></s:verbatim>
+        </s:paragraph>
+      </s:subsection>
+    </s:section>
+
+    <s:section>
+      <s:section-title>Platform Specific Issues</s:section-title>
+      <s:paragraph>
+        There are currently no known platform-specific issues.
+      </s:paragraph>
+    </s:section>
+
+    <s:section>
+      <s:section-title>License</s:section-title>
+      <s:paragraph>
+        All files distributed with the <s:term s:type="package">blueberry</s:term>
+        package are placed under the following license:
+        <s:verbatim s:type="license"><![CDATA[Copyright © 2013 <code@io7m.com> http://io7m.com
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.]]>
+        </s:verbatim>
+      </s:paragraph>
+    </s:section>
+  </s:part>
+
+  <s:part>
+    <s:part-title>Usage</s:part-title>
+    <s:part-contents/>
+    <s:section>
+      <s:section-title>Overview</s:section-title>
+      <s:subsection>
+        <s:subsection-title>Prerequisites</s:subsection-title>
+        <s:paragraph>
+          Most software projects proceed through the following steps (for
+          a hypothetical project <s:term s:type="variable">P</s:term>):
+        </s:paragraph>
+        <s:formal-item s:kind="example">
+          <s:formal-item-title>Development Lifecycle</s:formal-item-title>
+          <s:list-ordered>
+            <s:list-item>Developer writes code for project <s:term s:type="variable">P</s:term></s:list-item>
+            <s:list-item>Developer writes unit tests for project <s:term s:type="variable">P</s:term></s:list-item>
+            <s:list-item>Developer compiles code in project <s:term s:type="variable">P</s:term></s:list-item>
+            <s:list-item>Developer compiles unit tests in project <s:term s:type="variable">P</s:term></s:list-item>
+            <s:list-item>Developer runs unit tests in project <s:term s:type="variable">P</s:term></s:list-item>
+            <s:list-item>Developer packages compiled code in <s:term s:type="variable">P</s:term>, without unit tests</s:list-item>
+            <s:list-item>Developer delivers package of project <s:term s:type="variable">P</s:term> code to end-users</s:list-item>
+          </s:list-ordered>
+        </s:formal-item>
+        <s:paragraph>
+          Unfortunately, most projects also move through a subsequent step
+          consisting of the end-users discovering software bugs that would
+          have been discovered by the unit tests had they only been executed
+          on the end-user's computers.
+        </s:paragraph>
+        <s:paragraph>
+          In order to use the <s:term s:type="package">blueberry</s:term> package,
+          the following steps are required instead:
+        </s:paragraph>
+        <s:formal-item s:kind="example">
+          <s:formal-item-title>Development Lifecycle</s:formal-item-title>
+          <s:list-ordered>
+            <s:list-item>Developer writes code for project <s:term s:type="variable">P</s:term></s:list-item>
+            <s:list-item>Developer writes unit tests for project <s:term s:type="variable">P</s:term></s:list-item>
+            <s:list-item>Developer compiles code in project <s:term s:type="variable">P</s:term></s:list-item>
+            <s:list-item>Developer compiles unit tests in project <s:term s:type="variable">P</s:term></s:list-item>
+            <s:list-item>Developer runs unit tests in project <s:term s:type="variable">P</s:term></s:list-item>
+            <s:list-item>Developer packages compiled code in <s:term s:type="variable">P</s:term> <s:term s:type="emphasis">including</s:term> unit tests</s:list-item>
+            <s:list-item>Developer integrates the <s:term s:type="package">blueberry</s:term> package with <s:term s:type="variable">P</s:term></s:list-item>
+            <s:list-item>Developer delivers package of project <s:term s:type="variable">P</s:term> code and tests to end-users</s:list-item>
+          </s:list-ordered>
+        </s:formal-item>
+        <s:paragraph>
+          Note that unit tests are included, in compiled form, with the
+          package delivered to end-users. The package is also integrated
+          with <s:term s:type="package">blueberry</s:term> in some manner. The
+          precise meaning of "integration" is up to the developer using the
+          package, as there are numerous optional parts to the
+          <s:term s:type="package">blueberry</s:term> package).
+          Most developers will probably want to use the
+          <s:term s:type="package">blueberry</s:term>
+          <s:link s:target="com.io7m.blueberry.structure.gui">GUI</s:link>
+          in order to present end-users with a friendly GUI
+          interface for running tests.
+        </s:paragraph>
+        <s:paragraph>
+          The first step, therefore, is for the developer to arrange for
+          unit tests in his/her project to be included with the final
+          compiled package. The precise details of how to do this
+          are obviously project-specific and out of the scope of this
+          documentation. In the case of projects compiled with
+          <s:link-external s:target="http://maven.apache.org">Maven</s:link-external>,
+          it's simply a case of producing a
+          <s:link-external s:target="http://maven.apache.org/plugins/maven-jar-plugin/test-jar-mojo.html">test-jar</s:link-external>
+          and then adding this jar file to the classpath along with the rest
+          of the dependencies of the project in question.
+        </s:paragraph>
+      </s:subsection>
+    </s:section>
+    <s:section>
+      <s:section-title>Structure</s:section-title>
+      <s:subsection>
+        <s:subsection-title>Overview</s:subsection-title>
+        <s:paragraph>
+          The <s:term s:type="package">blueberry</s:term> package consists
+          of four main components: the
+          <s:link s:target="com.io7m.blueberry.structure.test-scanner">test scanner</s:link>, the
+          <s:link s:target="com.io7m.blueberry.structure.junit-runner">JUnit runner</s:link>, the
+          <s:link s:target="com.io7m.blueberry.structure.gui">GUI</s:link>, and the
+          <s:link s:target="com.io7m.blueberry.structure.report-format">report format</s:link>.
+          Each of the components are essentially optional; a developer using
+          the <s:term s:type="package">blueberry</s:term> package can use as
+          much or as little of the package as desired. The components of the
+          <s:term s:type="package">blueberry</s:term> package form a rough
+          pipeline:
+        </s:paragraph>
+        <s:formal-item s:kind="example">
+          <s:formal-item-title>Components</s:formal-item-title>
+          <s:image s:source="png/flow.png">Components</s:image>
+        </s:formal-item>
+      </s:subsection>
+      <s:subsection xml:id="com.io7m.blueberry.structure.test-scanner">
+        <s:subsection-title>Test scanner</s:subsection-title>
+        <s:paragraph>
+          The <s:term s:type="package">test scanner</s:term> uses the
+          <s:link-external s:target="http://code.google.com/p/reflections/">Reflections</s:link-external>
+          package to inspect all classes and jar files on the current
+          classpath and return the set of all classes that contain runnable
+          <s:link-external s:target="http://junit.org">JUnit</s:link-external>
+          tests.
+        </s:paragraph>
+        <s:paragraph>
+          Developers will not usually use the
+          <s:term s:type="package">test scanner</s:term> directly; it is used
+          by the <s:link s:target="com.io7m.blueberry.structure.gui">GUI</s:link>
+          to determine which tests to run.
+        </s:paragraph>
+        <s:paragraph>
+          The functionality of the test scanner is implemented in the
+          <s:link-external s:target="apidocs/com/io7m/blueberry/TestScanning.html">TestScanning</s:link-external>
+          class.
+        </s:paragraph>
+      </s:subsection>
+      <s:subsection xml:id="com.io7m.blueberry.structure.junit-runner">
+        <s:subsection-title>JUnit runner</s:subsection-title>
+        <s:paragraph>
+          The <s:term s:type="package">JUnit runner</s:term> runs all tests
+          in the given set of classes. Usually, the set of classes is obtained
+          from the <s:link s:target="com.io7m.blueberry.structure.test-scanner">test scanner</s:link>
+          but the developer can specify classes manually if desired.
+        </s:paragraph>
+        <s:paragraph>
+          Developers will not usually use the
+          <s:term s:type="package">JUnit runner</s:term> directly; it is used
+          by the <s:link s:target="com.io7m.blueberry.structure.gui">GUI</s:link>
+          to execute tests.
+        </s:paragraph>
+        <s:paragraph>
+          The functionality of the <s:term s:type="package">JUnit runner</s:term>
+          is implemented in the
+          <s:link-external s:target="apidocs/com/io7m/blueberry/TestCollectionRunner.html">TestCollectionRunner</s:link-external>
+          class.
+        </s:paragraph>
+      </s:subsection>
+      <s:subsection xml:id="com.io7m.blueberry.structure.gui">
+        <s:subsection-title>GUI</s:subsection-title>
+        <s:paragraph>
+          The <s:term s:type="package">GUI</s:term> package provides a
+          friendly and configurable graphical interface to the
+          <s:link s:target="com.io7m.blueberry.structure.junit-runner">JUnit runner</s:link>.
+          The GUI interface
+          can be instantiated for any project by writing a very simple
+          "main" program using the various GUI classes. The
+          <s:term s:type="package">io7m-blueberry-gui-example</s:term>
+          package provides a sample application consisting of the
+          following code:
+        </s:paragraph>
+        <s:formal-item s:kind="example">
+          <s:formal-item-title>Example GUI</s:formal-item-title>
+          <s:verbatim><xi:include href="GUIExampleMain.java.txt" parse="text"/></s:verbatim>
+        </s:formal-item>
+        <s:paragraph>
+          With the above code, the following test application is produced:
+        </s:paragraph>
+        <s:formal-item s:kind="example">
+          <s:formal-item-title>Example test view</s:formal-item-title>
+          <s:image s:source="png/example-test.png">Test view</s:image>
+        </s:formal-item>
+        <s:formal-item s:kind="example">
+          <s:formal-item-title>Example information view</s:formal-item-title>
+          <s:image s:source="png/example-info.png">Info view</s:image>
+        </s:formal-item>
+        <s:paragraph>
+          The resulting application automatically scans all classes on
+          the classpath that exist within the <s:term s:type="package">com.io7m.blueberry</s:term>
+          package (and children of that package). It runs the tests and
+          allows the user to save an XML report of the results. It also
+          provides an "information" page containing the project's logo,
+          version, and URI.
+        </s:paragraph>
+      </s:subsection>
+      <s:subsection xml:id="com.io7m.blueberry.structure.report-format">
+        <s:subsection-title>Report format</s:subsection-title>
+        <s:paragraph>
+          The <s:term s:type="package">JUnit runner</s:term> can serialize
+          results into a well-defined XML format. The reports contain
+          very detailed information about the tests: The elapsed time of
+          each test, the output produced on the standard out and standard
+          error streams, full traces of any and all exceptions (including
+          all of the causes of a given exception), and optionally a full
+          dump of the JVM's system properties and environment variables.
+        </s:paragraph>
+        <s:paragraph>
+          The reports can be validated against a schema to allow for
+          automated processing of reports. The RELAX-NG schema of the format
+          is as follows:
+        </s:paragraph>
+        <s:formal-item s:kind="data">
+          <s:formal-item-title>Report schema</s:formal-item-title>
+          <s:verbatim><xi:include href="../../../io7m-blueberry-core/src/main/resources/com/io7m/blueberry/blueberry-report.rng" parse="text"/></s:verbatim>
+        </s:formal-item>
+      </s:subsection>
+    </s:section>
+  </s:part>
+  
+  <s:part>
+    <s:part-title>API Reference</s:part-title>
+    <s:part-contents/>
+    <s:section>
+      <s:section-title>Javadoc</s:section-title>
+      <s:paragraph>
+        API documentation for the package is provided via the
+        included <s:link-external s:target="apidocs">Javadoc</s:link-external>.
+      </s:paragraph>
+    </s:section>
+  </s:part>
+
+</s:document>

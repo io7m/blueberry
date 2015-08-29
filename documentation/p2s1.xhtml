@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>io7m-blueberry 0.3.1 Documentation: 2.1. Overview</title><link rel="stylesheet" type="text/css" href="jstructural-2.0.0-layout.css"/><link rel="stylesheet" type="text/css" href="jstructural-2.0.0-colour.css"/><link rel="stylesheet" type="text/css" href="documentation.css"/></head><body><div class="st200_body"><div class="brand">
+  <div class="brand_left">
+    <a href="http://io7m.com/">io7m</a>
+  </div>
+  <div class="brand_right">
+    <a href="http://io7m.github.io/blueberry/">io7m-blueberry</a> 0.3.1
+  </div>
+</div><div class="st200_navbar st200_navbar_top"><table class="st200_navbar_table" summary="Navigation bar"><tr><td class="st200_navbar_prev_title_cell">2. Usage</td><td class="st200_navbar_up_title_cell">2. Usage</td><td class="st200_navbar_next_title_cell">2.2. Structure</td></tr><tr><td class="st200_navbar_prev_file_cell"><a href="p2.xhtml#st200_p2">Previous</a></td><td class="st200_navbar_up_file_cell"><a href="p2.xhtml#st200_p2">Up</a></td><td class="st200_navbar_next_file_cell"><a href="p2s2.xhtml#st200_p2s2">Next</a></td></tr></table><hr class="st200_hr"/></div><div class="st200_section_container"><div class="st200_section_title_number"><a id="st200_p2s1" href="#st200_p2s1">2.1</a></div><div class="st200_section_title">Overview</div><div class="st200_subsection_container"><div class="st200_subsection_title_number"><a id="st200_p2s1ss1" href="#st200_p2s1ss1">2.1.1</a></div><div class="st200_subsection_title">Prerequisites</div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s1ss1pg1" href="#st200_p2s1ss1pg1">1</a></div><div class="st200_paragraph">
+          Most software projects proceed through the following steps (for
+          a hypothetical project <span class="st200_term variable">P</span>):
+        </div></div><div class="st200_formal_item"><div class="st200_formal_item_title"><a id="st200_p2s1ss1fo1" href="#st200_p2s1ss1fo1">2.1.1.1. Development Lifecycle</a></div><ol class="st200_list_ordered"><li class="st200_list_item">Developer writes code for project <span class="st200_term variable">P</span></li><li class="st200_list_item">Developer writes unit tests for project <span class="st200_term variable">P</span></li><li class="st200_list_item">Developer compiles code in project <span class="st200_term variable">P</span></li><li class="st200_list_item">Developer compiles unit tests in project <span class="st200_term variable">P</span></li><li class="st200_list_item">Developer runs unit tests in project <span class="st200_term variable">P</span></li><li class="st200_list_item">Developer packages compiled code in <span class="st200_term variable">P</span>, without unit tests</li><li class="st200_list_item">Developer delivers package of project <span class="st200_term variable">P</span> code to end-users</li></ol></div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s1ss1pg2" href="#st200_p2s1ss1pg2">2</a></div><div class="st200_paragraph">
+          Unfortunately, most projects also move through a subsequent step
+          consisting of the end-users discovering software bugs that would
+          have been discovered by the unit tests had they only been executed
+          on the end-user's computers.
+        </div></div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s1ss1pg3" href="#st200_p2s1ss1pg3">3</a></div><div class="st200_paragraph">
+          In order to use the <span class="st200_term package">blueberry</span> package,
+          the following steps are required instead:
+        </div></div><div class="st200_formal_item"><div class="st200_formal_item_title"><a id="st200_p2s1ss1fo2" href="#st200_p2s1ss1fo2">2.1.1.2. Development Lifecycle</a></div><ol class="st200_list_ordered"><li class="st200_list_item">Developer writes code for project <span class="st200_term variable">P</span></li><li class="st200_list_item">Developer writes unit tests for project <span class="st200_term variable">P</span></li><li class="st200_list_item">Developer compiles code in project <span class="st200_term variable">P</span></li><li class="st200_list_item">Developer compiles unit tests in project <span class="st200_term variable">P</span></li><li class="st200_list_item">Developer runs unit tests in project <span class="st200_term variable">P</span></li><li class="st200_list_item">Developer packages compiled code in <span class="st200_term variable">P</span> <span class="st200_term emphasis">including</span> unit tests</li><li class="st200_list_item">Developer integrates the <span class="st200_term package">blueberry</span> package with <span class="st200_term variable">P</span></li><li class="st200_list_item">Developer delivers package of project <span class="st200_term variable">P</span> code and tests to end-users</li></ol></div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s1ss1pg4" href="#st200_p2s1ss1pg4">4</a></div><div class="st200_paragraph">
+          Note that unit tests are included, in compiled form, with the
+          package delivered to end-users. The package is also integrated
+          with <span class="st200_term package">blueberry</span> in some manner. The
+          precise meaning of "integration" is up to the developer using the
+          package, as there are numerous optional parts to the
+          <span class="st200_term package">blueberry</span> package).
+          Most developers will probably want to use the
+          <span class="st200_term package">blueberry</span>
+          <a class="st200_link" href="p2s2.xhtml#st200_p2s2ss4">GUI</a>
+          in order to present end-users with a friendly GUI
+          interface for running tests.
+        </div></div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s1ss1pg5" href="#st200_p2s1ss1pg5">5</a></div><div class="st200_paragraph">
+          The first step, therefore, is for the developer to arrange for
+          unit tests in his/her project to be included with the final
+          compiled package. The precise details of how to do this
+          are obviously project-specific and out of the scope of this
+          documentation. In the case of projects compiled with
+          <a class="st200_link_external" href="http://maven.apache.org">Maven</a>,
+          it's simply a case of producing a
+          <a class="st200_link_external" href="http://maven.apache.org/plugins/maven-jar-plugin/test-jar-mojo.html">test-jar</a>
+          and then adding this jar file to the classpath along with the rest
+          of the dependencies of the project in question.
+        </div></div></div></div><div class="st200_navbar st200_navbar_bottom"><hr class="st200_hr"/><table class="st200_navbar_table" summary="Navigation bar"><tr><td class="st200_navbar_prev_file_cell"><a href="p2.xhtml#st200_p2">Previous</a></td><td class="st200_navbar_up_file_cell"><a href="p2.xhtml#st200_p2">Up</a></td><td class="st200_navbar_next_file_cell"><a href="p2s2.xhtml#st200_p2s2">Next</a></td></tr><tr><td class="st200_navbar_prev_title_cell">2. Usage</td><td class="st200_navbar_up_title_cell">2. Usage</td><td class="st200_navbar_next_title_cell">2.2. Structure</td></tr></table></div></div></body></html>

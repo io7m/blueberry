@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>io7m-blueberry 0.3.1 Documentation: 2.2. Structure</title><link rel="stylesheet" type="text/css" href="jstructural-2.0.0-layout.css"/><link rel="stylesheet" type="text/css" href="jstructural-2.0.0-colour.css"/><link rel="stylesheet" type="text/css" href="documentation.css"/></head><body><div class="st200_body"><div class="brand">
+  <div class="brand_left">
+    <a href="http://io7m.com/">io7m</a>
+  </div>
+  <div class="brand_right">
+    <a href="http://io7m.github.io/blueberry/">io7m-blueberry</a> 0.3.1
+  </div>
+</div><div class="st200_navbar st200_navbar_top"><table class="st200_navbar_table" summary="Navigation bar"><tr><td class="st200_navbar_prev_title_cell">2.1. Overview</td><td class="st200_navbar_up_title_cell">2. Usage</td><td class="st200_navbar_next_title_cell">3. API Reference</td></tr><tr><td class="st200_navbar_prev_file_cell"><a href="p2s1.xhtml#st200_p2s1">Previous</a></td><td class="st200_navbar_up_file_cell"><a href="p2.xhtml#st200_p2">Up</a></td><td class="st200_navbar_next_file_cell"><a href="p3.xhtml#st200_p3">Next</a></td></tr></table><hr class="st200_hr"/></div><div class="st200_section_container"><div class="st200_section_title_number"><a id="st200_p2s2" href="#st200_p2s2">2.2</a></div><div class="st200_section_title">Structure</div><div class="st200_subsection_container"><div class="st200_subsection_title_number"><a id="st200_p2s2ss1" href="#st200_p2s2ss1">2.2.1</a></div><div class="st200_subsection_title">Overview</div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s2ss1pg1" href="#st200_p2s2ss1pg1">1</a></div><div class="st200_paragraph">
+          The <span class="st200_term package">blueberry</span> package consists
+          of four main components: the
+          <a class="st200_link" href="p2s2.xhtml#st200_p2s2ss2">test scanner</a>, the
+          <a class="st200_link" href="p2s2.xhtml#st200_p2s2ss3">JUnit runner</a>, the
+          <a class="st200_link" href="p2s2.xhtml#st200_p2s2ss4">GUI</a>, and the
+          <a class="st200_link" href="p2s2.xhtml#st200_p2s2ss5">report format</a>.
+          Each of the components are essentially optional; a developer using
+          the <span class="st200_term package">blueberry</span> package can use as
+          much or as little of the package as desired. The components of the
+          <span class="st200_term package">blueberry</span> package form a rough
+          pipeline:
+        </div></div><div class="st200_formal_item"><div class="st200_formal_item_title"><a id="st200_p2s2ss1fo1" href="#st200_p2s2ss1fo1">2.2.1.1. Components</a></div><img class="st200_image" alt="Components" src="png/flow.png"/></div></div><div class="st200_subsection_container"><div class="st200_subsection_title_number"><a id="st200_p2s2ss2" href="#st200_p2s2ss2">2.2.2</a></div><div class="st200_subsection_title">Test scanner</div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s2ss2pg1" href="#st200_p2s2ss2pg1">1</a></div><div class="st200_paragraph">
+          The <span class="st200_term package">test scanner</span> uses the
+          <a class="st200_link_external" href="http://code.google.com/p/reflections/">Reflections</a>
+          package to inspect all classes and jar files on the current
+          classpath and return the set of all classes that contain runnable
+          <a class="st200_link_external" href="http://junit.org">JUnit</a>
+          tests.
+        </div></div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s2ss2pg2" href="#st200_p2s2ss2pg2">2</a></div><div class="st200_paragraph">
+          Developers will not usually use the
+          <span class="st200_term package">test scanner</span> directly; it is used
+          by the <a class="st200_link" href="p2s2.xhtml#st200_p2s2ss4">GUI</a>
+          to determine which tests to run.
+        </div></div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s2ss2pg3" href="#st200_p2s2ss2pg3">3</a></div><div class="st200_paragraph">
+          The functionality of the test scanner is implemented in the
+          <a class="st200_link_external" href="apidocs/com/io7m/blueberry/TestScanning.html">TestScanning</a>
+          class.
+        </div></div></div><div class="st200_subsection_container"><div class="st200_subsection_title_number"><a id="st200_p2s2ss3" href="#st200_p2s2ss3">2.2.3</a></div><div class="st200_subsection_title">JUnit runner</div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s2ss3pg1" href="#st200_p2s2ss3pg1">1</a></div><div class="st200_paragraph">
+          The <span class="st200_term package">JUnit runner</span> runs all tests
+          in the given set of classes. Usually, the set of classes is obtained
+          from the <a class="st200_link" href="p2s2.xhtml#st200_p2s2ss2">test scanner</a>
+          but the developer can specify classes manually if desired.
+        </div></div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s2ss3pg2" href="#st200_p2s2ss3pg2">2</a></div><div class="st200_paragraph">
+          Developers will not usually use the
+          <span class="st200_term package">JUnit runner</span> directly; it is used
+          by the <a class="st200_link" href="p2s2.xhtml#st200_p2s2ss4">GUI</a>
+          to execute tests.
+        </div></div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s2ss3pg3" href="#st200_p2s2ss3pg3">3</a></div><div class="st200_paragraph">
+          The functionality of the <span class="st200_term package">JUnit runner</span>
+          is implemented in the
+          <a class="st200_link_external" href="apidocs/com/io7m/blueberry/TestCollectionRunner.html">TestCollectionRunner</a>
+          class.
+        </div></div></div><div class="st200_subsection_container"><div class="st200_subsection_title_number"><a id="st200_p2s2ss4" href="#st200_p2s2ss4">2.2.4</a></div><div class="st200_subsection_title">GUI</div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s2ss4pg1" href="#st200_p2s2ss4pg1">1</a></div><div class="st200_paragraph">
+          The <span class="st200_term package">GUI</span> package provides a
+          friendly and configurable graphical interface to the
+          <a class="st200_link" href="p2s2.xhtml#st200_p2s2ss3">JUnit runner</a>.
+          The GUI interface
+          can be instantiated for any project by writing a very simple
+          "main" program using the various GUI classes. The
+          <span class="st200_term package">io7m-blueberry-gui-example</span>
+          package provides a sample application consisting of the
+          following code:
+        </div></div><div class="st200_formal_item"><div class="st200_formal_item_title"><a id="st200_p2s2ss4fo1" href="#st200_p2s2ss4fo1">2.2.4.1. Example GUI</a></div><pre class="st200_verbatim">/*
+ * Copyright © 2014 &lt;code@io7m.com&gt; http://io7m.com
+ * 
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+ * SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+ * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+package com.io7m.blueberry.documentation;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
+import com.io7m.blueberry.TestReportConfig;
+import com.io7m.blueberry.gui.GUI;
+import com.io7m.blueberry.gui.GUIProjectInfo;
+import com.io7m.blueberry.gui.GUIProjectVersion;
+import com.io7m.junreachable.UnreachableCodeException;
+
+/**
+ * A trivial GUI example.
+ */
+
+public final class GUIExampleMain
+{
+  private GUIExampleMain()
+  {
+    throw new UnreachableCodeException();
+  }
+
+  /**
+   * The main function.
+   * 
+   * @param args
+   *          Command line arguments.
+   * @throws URISyntaxException
+   *           Upon invalid URIs.
+   */
+
+  public static void main(
+    final String[] args)
+    throws URISyntaxException
+  {
+    final TestReportConfig xml_config = new TestReportConfig();
+    final GUIProjectVersion version = new GUIProjectVersion(0, 1, 0, "rc1");
+    final GUIProjectInfo info =
+      new GUIProjectInfo("blueberry-example", version);
+    info.addPackagePrefix("com.io7m.blueberry");
+    info.setProjectURI(new URI("http://io7m.com/software/blueberry"));
+    info.setProjectIcon(GUIExampleMain.class.getResource(
+      "/com/io7m/blueberry/gui_example/blueberry48.png").toURI());
+
+    SwingUtilities.invokeLater(new Runnable() {
+      @Override public void run()
+      {
+        final GUI g = new GUI(info, xml_config);
+        g.getMainWindow().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      }
+    });
+  }
+}
+</pre></div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s2ss4pg2" href="#st200_p2s2ss4pg2">2</a></div><div class="st200_paragraph">
+          With the above code, the following test application is produced:
+        </div></div><div class="st200_formal_item"><div class="st200_formal_item_title"><a id="st200_p2s2ss4fo2" href="#st200_p2s2ss4fo2">2.2.4.2. Example test view</a></div><img class="st200_image" alt="Test view" src="png/example-test.png"/></div><div class="st200_formal_item"><div class="st200_formal_item_title"><a id="st200_p2s2ss4fo3" href="#st200_p2s2ss4fo3">2.2.4.3. Example information view</a></div><img class="st200_image" alt="Info view" src="png/example-info.png"/></div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s2ss4pg3" href="#st200_p2s2ss4pg3">3</a></div><div class="st200_paragraph">
+          The resulting application automatically scans all classes on
+          the classpath that exist within the <span class="st200_term package">com.io7m.blueberry</span>
+          package (and children of that package). It runs the tests and
+          allows the user to save an XML report of the results. It also
+          provides an "information" page containing the project's logo,
+          version, and URI.
+        </div></div></div><div class="st200_subsection_container"><div class="st200_subsection_title_number"><a id="st200_p2s2ss5" href="#st200_p2s2ss5">2.2.5</a></div><div class="st200_subsection_title">Report format</div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s2ss5pg1" href="#st200_p2s2ss5pg1">1</a></div><div class="st200_paragraph">
+          The <span class="st200_term package">JUnit runner</span> can serialize
+          results into a well-defined XML format. The reports contain
+          very detailed information about the tests: The elapsed time of
+          each test, the output produced on the standard out and standard
+          error streams, full traces of any and all exceptions (including
+          all of the causes of a given exception), and optionally a full
+          dump of the JVM's system properties and environment variables.
+        </div></div><div class="st200_paragraph_container"><div class="st200_paragraph_number"><a id="st200_p2s2ss5pg2" href="#st200_p2s2ss5pg2">2</a></div><div class="st200_paragraph">
+          The reports can be validated against a schema to allow for
+          automated processing of reports. The RELAX-NG schema of the format
+          is as follows:
+        </div></div><div class="st200_formal_item"><div class="st200_formal_item_title"><a id="st200_p2s2ss5fo1" href="#st200_p2s2ss5fo1">2.2.5.1. Report schema</a></div><pre class="st200_verbatim">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+
+&lt;!--
+  Copyright © 2013 &lt;code@io7m.com&gt; http://io7m.com
+
+  Permission to use, copy, modify, and/or distribute this software for any
+  purpose with or without fee is hereby granted, provided that the above
+  copyright notice and this permission notice appear in all copies.
+
+  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+--&gt;
+
+&lt;r:grammar
+  xmlns:b="http://schemas.io7m.com/blueberry/1.0.0"
+  xmlns:r="http://relaxng.org/ns/structure/1.0"
+  datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"&gt;
+
+  &lt;r:start combine="choice"&gt;
+    &lt;r:choice&gt;
+      &lt;r:ref name="blueberry.report"/&gt;
+    &lt;/r:choice&gt;
+  &lt;/r:start&gt;
+
+  &lt;r:define name="blueberry.standard-attributes"&gt;
+    &lt;r:optional&gt;
+      &lt;r:attribute name="xml:base"&gt;
+        &lt;r:text/&gt;
+      &lt;/r:attribute&gt;
+    &lt;/r:optional&gt;
+    &lt;r:optional&gt;
+      &lt;r:attribute name="xml:lang"&gt;
+        &lt;r:text/&gt;
+      &lt;/r:attribute&gt;
+    &lt;/r:optional&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.space-attribute"&gt;
+    &lt;r:optional&gt;
+      &lt;r:attribute name="xml:space"&gt;
+        &lt;r:choice&gt;
+          &lt;r:value&gt;default&lt;/r:value&gt;
+          &lt;r:value&gt;preserve&lt;/r:value&gt;
+        &lt;/r:choice&gt;
+      &lt;/r:attribute&gt;
+    &lt;/r:optional&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.trace-class"&gt;
+    &lt;r:element name="b:trace-class"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:text/&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.trace-method"&gt;
+    &lt;r:element name="b:trace-method"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:text/&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.trace-file"&gt;
+    &lt;r:element name="b:trace-file"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:text/&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.trace-line"&gt;
+    &lt;r:element name="b:trace-line"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:data type="integer"/&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.trace"&gt;
+    &lt;r:element name="b:trace"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:interleave&gt;
+        &lt;r:ref name="blueberry.trace-class"/&gt;
+        &lt;r:ref name="blueberry.trace-method"/&gt;
+        &lt;r:ref name="blueberry.trace-file"/&gt;
+        &lt;r:ref name="blueberry.trace-line"/&gt;
+      &lt;/r:interleave&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.elapsed-nanos"&gt;
+    &lt;r:element name="b:elapsed-nanos"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:data type="unsignedLong"/&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.output-stdout"&gt;
+    &lt;r:element name="b:output-stdout"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:ref name="blueberry.space-attribute"/&gt;
+      &lt;r:text/&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+  
+  &lt;r:define name="blueberry.output-stderr"&gt;
+    &lt;r:element name="b:output-stderr"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:ref name="blueberry.space-attribute"/&gt;
+      &lt;r:text/&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.message"&gt;
+    &lt;r:element name="b:message"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:text/&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.exception"&gt;
+    &lt;r:element name="b:exception"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:attribute name="type"&gt;
+        &lt;r:text/&gt;
+      &lt;/r:attribute&gt;
+      &lt;r:attribute name="level"&gt;
+        &lt;r:data type="integer"/&gt;
+      &lt;/r:attribute&gt;
+      &lt;r:interleave&gt;
+        &lt;r:ref name="blueberry.message"/&gt;
+        &lt;r:zeroOrMore&gt;
+          &lt;r:ref name="blueberry.trace"/&gt;
+        &lt;/r:zeroOrMore&gt;
+      &lt;/r:interleave&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.exceptions"&gt;
+    &lt;r:element name="b:exceptions"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:zeroOrMore&gt;
+        &lt;r:ref name="blueberry.exception"/&gt;
+      &lt;/r:zeroOrMore&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.test-failed"&gt;
+    &lt;r:element name="b:test-failed"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:attribute name="name"&gt;
+        &lt;r:text/&gt;
+      &lt;/r:attribute&gt;
+      &lt;r:interleave&gt;
+        &lt;r:ref name="blueberry.elapsed-nanos"/&gt;
+        &lt;r:ref name="blueberry.exceptions"/&gt;
+        &lt;r:ref name="blueberry.output-stdout"/&gt;
+        &lt;r:ref name="blueberry.output-stderr"/&gt;
+      &lt;/r:interleave&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+  
+  &lt;r:define name="blueberry.test-skipped"&gt;
+    &lt;r:element name="b:test-skipped"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:attribute name="name"&gt;
+        &lt;r:text/&gt;
+      &lt;/r:attribute&gt;
+      &lt;r:interleave&gt;
+        &lt;r:element name="b:reason"&gt;
+          &lt;r:text/&gt;
+        &lt;/r:element&gt;
+        &lt;r:ref name="blueberry.output-stdout"/&gt;
+        &lt;r:ref name="blueberry.output-stderr"/&gt;
+      &lt;/r:interleave&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+  
+  &lt;r:define name="blueberry.test-missed"&gt;
+    &lt;r:element name="b:test-missed"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:attribute name="name"&gt;
+        &lt;r:text/&gt;
+      &lt;/r:attribute&gt;
+      &lt;r:empty/&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.test-succeeded"&gt;
+    &lt;r:element name="b:test-succeeded"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:attribute name="name"&gt;
+        &lt;r:text/&gt;
+      &lt;/r:attribute&gt;
+      &lt;r:interleave&gt;
+        &lt;r:ref name="blueberry.elapsed-nanos"/&gt;
+        &lt;r:ref name="blueberry.output-stdout"/&gt;
+        &lt;r:ref name="blueberry.output-stderr"/&gt;
+      &lt;/r:interleave&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.class"&gt;
+    &lt;r:element name="b:class"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:attribute name="name"&gt;
+        &lt;r:text/&gt;
+      &lt;/r:attribute&gt;
+      &lt;r:zeroOrMore&gt;
+        &lt;r:choice&gt;
+          &lt;r:ref name="blueberry.test-succeeded"/&gt;
+          &lt;r:ref name="blueberry.test-failed"/&gt;
+          &lt;r:ref name="blueberry.test-skipped"/&gt;
+          &lt;r:ref name="blueberry.test-missed"/&gt;
+        &lt;/r:choice&gt;
+      &lt;/r:zeroOrMore&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+  
+  &lt;r:define name="blueberry.classes"&gt;
+    &lt;r:element name="b:classes"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:zeroOrMore&gt;
+        &lt;r:ref name="blueberry.class"/&gt;
+      &lt;/r:zeroOrMore&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.system-environment-variable"&gt;
+    &lt;r:element name="b:system-environment-variable"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:interleave&gt;
+        &lt;r:element name="b:key"&gt;
+          &lt;r:text/&gt;
+        &lt;/r:element&gt;
+        &lt;r:element name="b:value"&gt;
+          &lt;r:text/&gt;
+        &lt;/r:element&gt;
+      &lt;/r:interleave&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.system-environment"&gt;
+    &lt;r:element name="b:system-environment"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:zeroOrMore&gt;
+        &lt;r:ref name="blueberry.system-environment-variable"/&gt;
+      &lt;/r:zeroOrMore&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.system-property"&gt;
+    &lt;r:element name="b:system-property"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:interleave&gt;
+        &lt;r:element name="b:key"&gt;
+          &lt;r:text/&gt;
+        &lt;/r:element&gt;
+        &lt;r:element name="b:value"&gt;
+          &lt;r:text/&gt;
+        &lt;/r:element&gt;
+      &lt;/r:interleave&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.system-properties"&gt;
+    &lt;r:element name="b:system-properties"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:zeroOrMore&gt;
+        &lt;r:ref name="blueberry.system-property"/&gt;
+      &lt;/r:zeroOrMore&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+  &lt;r:define name="blueberry.report"&gt;
+    &lt;r:element name="b:report"&gt;
+      &lt;r:ref name="blueberry.standard-attributes"/&gt;
+      &lt;r:interleave&gt;
+        &lt;r:ref name="blueberry.classes"/&gt;
+        &lt;r:optional&gt;
+          &lt;r:ref name="blueberry.system-properties"/&gt;
+        &lt;/r:optional&gt;
+        &lt;r:optional&gt;
+          &lt;r:ref name="blueberry.system-environment"/&gt;
+        &lt;/r:optional&gt;
+      &lt;/r:interleave&gt;
+    &lt;/r:element&gt;
+  &lt;/r:define&gt;
+
+&lt;/r:grammar&gt;
+</pre></div></div></div><div class="st200_navbar st200_navbar_bottom"><hr class="st200_hr"/><table class="st200_navbar_table" summary="Navigation bar"><tr><td class="st200_navbar_prev_file_cell"><a href="p2s1.xhtml#st200_p2s1">Previous</a></td><td class="st200_navbar_up_file_cell"><a href="p2.xhtml#st200_p2">Up</a></td><td class="st200_navbar_next_file_cell"><a href="p3.xhtml#st200_p3">Next</a></td></tr><tr><td class="st200_navbar_prev_title_cell">2.1. Overview</td><td class="st200_navbar_up_title_cell">2. Usage</td><td class="st200_navbar_next_title_cell">3. API Reference</td></tr></table></div></div></body></html>
