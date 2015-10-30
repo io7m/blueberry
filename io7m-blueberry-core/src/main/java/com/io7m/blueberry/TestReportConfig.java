@@ -24,23 +24,30 @@ public final class TestReportConfig
 {
   private boolean output_environment       = true;
   private boolean output_system_properties = true;
+  private String package_name;
+  private String package_version;
 
   /**
    * Construct a new empty configuration.
+   *
+   * @param in_package_name    The package name
+   * @param in_package_version The package version
    */
 
-  public TestReportConfig()
+  public TestReportConfig(
+    final String in_package_name,
+    final String in_package_version)
   {
-
+    this.package_name = in_package_name;
+    this.package_version = in_package_version;
   }
 
   /**
    * Set whether or not the contents of the JVM's environment should appear in
    * the resulting report.
-   * 
-   * @param output
-   *          <code>true</code> if the JVM's environment should appear in
-   *          reports.
+   *
+   * @param output <code>true</code> if the JVM's environment should appear in
+   *               reports.
    */
 
   public void setOutputEnvironment(
@@ -52,10 +59,9 @@ public final class TestReportConfig
   /**
    * Set whether or not the contents of the JVM's system properties should
    * appear in the resulting report.
-   * 
-   * @param output
-   *          <code>true</code> if the JVM's system properties should appear
-   *          in reports.
+   *
+   * @param output <code>true</code> if the JVM's system properties should
+   *               appear in reports.
    */
 
   public void setOutputSystemProperties(
@@ -66,8 +72,8 @@ public final class TestReportConfig
 
   /**
    * @return <code>true</code> if the report will contain the contents of the
-   *         JVM's environment.
-   * 
+   * JVM's environment.
+   *
    * @see #setOutputEnvironment(boolean)
    */
 
@@ -78,13 +84,54 @@ public final class TestReportConfig
 
   /**
    * @return <code>true</code> if the report will contain the contents of the
-   *         JVM's system properties.
-   * 
+   * JVM's system properties.
+   *
    * @see #setOutputSystemProperties(boolean)
    */
 
   public boolean wantOutputSystemProperties()
   {
     return this.output_system_properties;
+  }
+
+  /**
+   * @return The package name
+   */
+
+  public String getPackageName()
+  {
+    return this.package_name;
+  }
+
+  /**
+   * Set the package name.
+   *
+   * @param in_name The package name
+   */
+
+  public void setPackageName(final String in_name)
+  {
+    this.package_name = in_name;
+  }
+
+  /**
+   * @return The package version
+   */
+
+  public String getPackageVersion()
+  {
+    return this.package_version;
+  }
+
+  /**
+   * Set the package version.
+   *
+   * @param in_package_version The package version
+   */
+
+  public void setPackageVersion(
+    final String in_package_version)
+  {
+    this.package_version = in_package_version;
   }
 }

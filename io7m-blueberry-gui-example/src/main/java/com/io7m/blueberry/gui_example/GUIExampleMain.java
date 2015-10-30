@@ -16,17 +16,15 @@
 
 package com.io7m.blueberry.gui_example;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
-import com.io7m.blueberry.TestReportConfig;
 import com.io7m.blueberry.gui.GUI;
 import com.io7m.blueberry.gui.GUIProjectInfo;
 import com.io7m.blueberry.gui.GUIProjectVersion;
 import com.io7m.junreachable.UnreachableCodeException;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * A trivial GUI example.
@@ -41,32 +39,33 @@ public final class GUIExampleMain
 
   /**
    * The main function.
-   * 
-   * @param args
-   *          Command line arguments.
-   * @throws URISyntaxException
-   *           Upon invalid URIs.
+   *
+   * @param args Command line arguments.
+   *
+   * @throws URISyntaxException Upon invalid URIs.
    */
 
   public static void main(
     final String[] args)
     throws URISyntaxException
   {
-    final TestReportConfig xml_config = new TestReportConfig();
     final GUIProjectVersion version = new GUIProjectVersion(0, 1, 0, "rc1");
     final GUIProjectInfo info =
       new GUIProjectInfo("blueberry-example", version);
     info.addPackagePrefix("com.io7m.blueberry");
     info.setProjectURI(new URI("http://io7m.com/software/blueberry"));
-    info.setProjectIcon(GUIExampleMain.class.getResource(
-      "/com/io7m/blueberry/gui_example/blueberry48.png").toURI());
+    info.setProjectIcon(
+      GUIExampleMain.class.getResource(
+        "/com/io7m/blueberry/gui_example/blueberry48.png").toURI());
 
-    SwingUtilities.invokeLater(new Runnable() {
-      @Override public void run()
+    SwingUtilities.invokeLater(
+      new Runnable()
       {
-        final GUI g = new GUI(info, xml_config);
-        g.getMainWindow().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      }
-    });
+        @Override public void run()
+        {
+          final GUI g = new GUI(info);
+          g.getMainWindow().setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        }
+      });
   }
 }

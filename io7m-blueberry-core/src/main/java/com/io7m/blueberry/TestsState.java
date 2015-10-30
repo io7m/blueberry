@@ -16,20 +16,18 @@
 
 package com.io7m.blueberry;
 
+import com.io7m.blueberry.TestState.Failed;
+import com.io7m.blueberry.TestState.Initialized;
+import nu.xom.Attribute;
+import nu.xom.Element;
+import org.junit.runners.model.InitializationError;
+
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-
-import nu.xom.Attribute;
-import nu.xom.Element;
-
-import org.junit.runners.model.InitializationError;
-
-import com.io7m.blueberry.TestState.Failed;
-import com.io7m.blueberry.TestState.Initialized;
 
 /**
  * Opaque structure representing the current testing state.
@@ -38,7 +36,7 @@ import com.io7m.blueberry.TestState.Initialized;
 public final class TestsState implements ToXMLReportType<TestReportConfig>
 {
   private final Map<ClassName, Map<TestName, TestState>> tests;
-  private final TestStateListenerType                        listener;
+  private final TestStateListenerType                    listener;
   private final Initialized                              initial_state;
 
   TestsState(
@@ -61,6 +59,50 @@ public final class TestsState implements ToXMLReportType<TestReportConfig>
         this.testsStatePut(class_name, test_name, this.initial_state);
       }
     }
+  }
+
+  private static Element toXMLEnvironment()
+  {
+    final Element ee =
+      new Element("system-environment", TestReportXMLVersion.XML_URI);
+    final Map<String, String> env = System.getenv();
+
+    for (final Entry<String, String> e : env.entrySet()) {
+      final Element p = new Element(
+        "system-environment-variable", TestReportXMLVersion.XML_URI);
+      final Element pk = new Element("key", TestReportXMLVersion.XML_URI);
+      pk.appendChild(e.getKey());
+      final Element pv = new Element("value", TestReportXMLVersion.XML_URI);
+      pv.appendChild(e.getValue());
+      p.appendChild(pk);
+      p.appendChild(pv);
+      ee.appendChild(p);
+    }
+
+    return ee;
+  }
+
+  private static Element toXMLProperties()
+  {
+    final Element pe =
+      new Element("system-properties", TestReportXMLVersion.XML_URI);
+    final Properties props = System.getProperties();
+
+    for (final Entry<Object, Object> e : props.entrySet()) {
+      final String key = (String) e.getKey();
+      final String val = (String) e.getValue();
+      final Element p =
+        new Element("system-property", TestReportXMLVersion.XML_URI);
+      final Element pk = new Element("key", TestReportXMLVersion.XML_URI);
+      pk.appendChild(key);
+      final Element pv = new Element("value", TestReportXMLVersion.XML_URI);
+      pv.appendChild(val);
+      p.appendChild(pk);
+      p.appendChild(pv);
+      pe.appendChild(p);
+    }
+
+    return pe;
   }
 
   void testsStateClassInitializationFailed(
@@ -129,6 +171,10 @@ public final class TestsState implements ToXMLReportType<TestReportConfig>
     final TestReportConfig config)
   {
     final Element root = new Element("report", TestReportXMLVersion.XML_URI);
+
+    final Element info = this.toXMLPackageInfo(config);
+    root.appendChild(info);
+
     final Element classes = this.toXMLClasses();
 
     if (config.wantOutputEnvironment()) {
@@ -144,50 +190,17 @@ public final class TestsState implements ToXMLReportType<TestReportConfig>
     return root;
   }
 
-  private static Element toXMLEnvironment()
+  private Element toXMLPackageInfo(final TestReportConfig config)
   {
-    final Element ee =
-      new Element("system-environment", TestReportXMLVersion.XML_URI);
-    final Map<String, String> env = System.getenv();
-
-    for (final Entry<String, String> e : env.entrySet()) {
-      final Element p =
-        new Element(
-          "system-environment-variable",
-          TestReportXMLVersion.XML_URI);
-      final Element pk = new Element("key", TestReportXMLVersion.XML_URI);
-      pk.appendChild(e.getKey());
-      final Element pv = new Element("value", TestReportXMLVersion.XML_URI);
-      pv.appendChild(e.getValue());
-      p.appendChild(pk);
-      p.appendChild(pv);
-      ee.appendChild(p);
-    }
-
-    return ee;
-  }
-
-  private static Element toXMLProperties()
-  {
-    final Element pe =
-      new Element("system-properties", TestReportXMLVersion.XML_URI);
-    final Properties props = System.getProperties();
-
-    for (final Entry<Object, Object> e : props.entrySet()) {
-      final String key = (String) e.getKey();
-      final String val = (String) e.getValue();
-      final Element p =
-        new Element("system-property", TestReportXMLVersion.XML_URI);
-      final Element pk = new Element("key", TestReportXMLVersion.XML_URI);
-      pk.appendChild(key);
-      final Element pv = new Element("value", TestReportXMLVersion.XML_URI);
-      pv.appendChild(val);
-      p.appendChild(pk);
-      p.appendChild(pv);
-      pe.appendChild(p);
-    }
-
-    return pe;
+    final Element info =
+      new Element("package-info", TestReportXMLVersion.XML_URI);
+    final Element e_name = new Element("name", TestReportXMLVersion.XML_URI);
+    e_name.appendChild(config.getPackageName());
+    final Element e_ver = new Element("version", TestReportXMLVersion.XML_URI);
+    e_ver.appendChild(config.getPackageVersion());
+    info.appendChild(e_name);
+    info.appendChild(e_ver);
+    return info;
   }
 
   private Element toXMLClasses()
@@ -201,8 +214,7 @@ public final class TestsState implements ToXMLReportType<TestReportConfig>
       final Map<TestName, TestState> class_tests = ce.getValue();
       final Element class_element =
         new Element("class", TestReportXMLVersion.XML_URI);
-      class_element
-        .addAttribute(new Attribute("name", class_name.getActual()));
+      class_element.addAttribute(new Attribute("name", class_name.getActual()));
 
       for (final Entry<TestName, TestState> te : class_tests.entrySet()) {
         final TestName test_name = te.getKey();

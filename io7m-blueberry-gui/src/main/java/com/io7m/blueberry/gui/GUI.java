@@ -16,9 +16,9 @@
 
 package com.io7m.blueberry.gui;
 
-import javax.swing.JFrame;
-
 import com.io7m.blueberry.TestReportConfig;
+
+import javax.swing.JFrame;
 
 /**
  * The main Swing GUI structure.
@@ -28,24 +28,20 @@ public final class GUI
 {
   private final GUIMainWindow    main_window;
   private final GUIProjectInfo   info;
-  private final TestReportConfig xml_config;
+  private final TestReportConfig report_config;
 
   /**
    * Construct a new GUI.
-   * 
-   * @param in_info
-   *          The project info.
-   * @param in_config
-   *          The configuration for the window.
+   *
+   * @param in_info The project info
    */
 
   public GUI(
-    final GUIProjectInfo in_info,
-    final TestReportConfig in_config)
+    final GUIProjectInfo in_info)
   {
     this.info = in_info;
-    this.xml_config = in_config;
-    this.main_window = new GUIMainWindow(in_info, in_config);
+    this.report_config = in_info.getReportConfig();
+    this.main_window = new GUIMainWindow(in_info, this.report_config);
     this.main_window.setVisible(true);
   }
 

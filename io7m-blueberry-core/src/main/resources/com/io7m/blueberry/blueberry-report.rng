@@ -275,10 +275,23 @@
     </r:element>
   </r:define>
 
+  <r:define name="blueberry.package-info">
+    <r:element name="b:package-info">
+      <r:ref name="blueberry.standard-attributes"/>
+      <r:element name="b:name">
+        <r:text/>
+      </r:element>
+      <r:element name="b:version">
+        <r:text/>
+      </r:element>
+    </r:element>
+  </r:define>
+
   <r:define name="blueberry.report">
     <r:element name="b:report">
       <r:ref name="blueberry.standard-attributes"/>
       <r:interleave>
+        <r:ref name="blueberry.package-info"/>
         <r:ref name="blueberry.classes"/>
         <r:optional>
           <r:ref name="blueberry.system-properties"/>

@@ -16,11 +16,12 @@
 
 package com.io7m.blueberry.gui;
 
+import com.io7m.blueberry.TestReportConfig;
+import com.io7m.jnull.Nullable;
+
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.io7m.jnull.Nullable;
 
 /**
  * Information about the project.
@@ -28,19 +29,18 @@ import com.io7m.jnull.Nullable;
 
 public final class GUIProjectInfo
 {
-  private final String            project_name;
-  private @Nullable URI           project_uri;
-  private final GUIProjectVersion project_version;
-  private final Set<String>       project_package_prefixes;
-  private @Nullable URI           project_icon;
+  private final     String            project_name;
+  private final     GUIProjectVersion project_version;
+  private final     Set<String>       project_package_prefixes;
+  private final     TestReportConfig  report_config;
+  private @Nullable URI               project_uri;
+  private @Nullable URI               project_icon;
 
   /**
    * Construct project info.
-   * 
-   * @param in_project_name
-   *          The project name.
-   * @param in_project_version
-   *          The project version.
+   *
+   * @param in_project_name    The project name.
+   * @param in_project_version The project version
    */
 
   public GUIProjectInfo(
@@ -51,13 +51,14 @@ public final class GUIProjectInfo
     this.project_uri = null;
     this.project_version = in_project_version;
     this.project_package_prefixes = new HashSet<String>();
+    this.report_config =
+      new TestReportConfig(this.project_name, this.project_version.toString());
   }
 
   /**
    * Add a package prefix.
-   * 
-   * @param prefix
-   *          The prefix.
+   *
+   * @param prefix The prefix.
    */
 
   public void addPackagePrefix(
@@ -85,6 +86,18 @@ public final class GUIProjectInfo
   }
 
   /**
+   * Set the project icon URI.
+   *
+   * @param icon The icon.
+   */
+
+  public void setProjectIcon(
+    final URI icon)
+  {
+    this.project_icon = icon;
+  }
+
+  /**
    * @return The project name.
    */
 
@@ -103,38 +116,24 @@ public final class GUIProjectInfo
   }
 
   /**
-   * @return The version for the project.
-   */
-
-  public GUIProjectVersion getProjectVersion()
-  {
-    return this.project_version;
-  }
-
-  /**
-   * Set the project icon URI.
-   * 
-   * @param icon
-   *          The icon.
-   */
-
-  public void setProjectIcon(
-    final URI icon)
-  {
-    this.project_icon = icon;
-  }
-
-  /**
    * Set the project URI.
-   * 
-   * @param uri
-   *          The URI.
+   *
+   * @param uri The URI.
    */
 
   public void setProjectURI(
     final URI uri)
   {
     this.project_uri = uri;
+  }
+
+  /**
+   * @return The version for the project.
+   */
+
+  public GUIProjectVersion getProjectVersion()
+  {
+    return this.project_version;
   }
 
   @Override public String toString()
@@ -152,5 +151,14 @@ public final class GUIProjectInfo
     final String r = builder.toString();
     assert r != null;
     return r;
+  }
+
+  /**
+   * @return The report configuration
+   */
+
+  public TestReportConfig getReportConfig()
+  {
+    return this.report_config;
   }
 }
