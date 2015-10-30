@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document
+  xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>io7m-blueberry</title>
+  </properties>
+
+  <body>
+    <subsection name="blueberry">
+      <p>
+      The <var>blueberry</var> package implements a system that allows non-technical
+      users to participate in unit-testing of software without having to install any
+      development tools or have access to the software's source code.
+      </p>
+      <p>
+        <img src="example-test.png" alt="Example test runner"/>
+      </p>
+    </subsection>
+  </body>
+
+</document>
